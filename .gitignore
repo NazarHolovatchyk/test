@@ -1,0 +1,8 @@
+venv/
+lab/
+Home/home-assistant.log
+Home/home-assistant_v2.db
+Home/.HA_VERSION
+Home/.uuid
+Home/deps
+py2
