@@ -127,6 +127,13 @@ switch livingroom_cabinet_light:
   type: sp2
   friendly_name: 'Livingroom Cabinet light'
 
+switch childroom_iron:
+  platform: broadlink
+  host: 192.168.1.204
+  mac: '34:EA:34:E4:05:A5'
+  type: sp2
+  friendly_name: 'Childroom Iron'
+
 # https://home-assistant.io/components/switch.broadlink/
 switch broadlink_rm2_apple_tv:
   name: Apple TV
@@ -251,11 +258,11 @@ switch broadlink_rm2_lg_tv:
 #      command_off: ""
 
 
-switch broadlink_rm2_intelite:
-  name: Intelite
+switch bedroom_intelite:
+  name: Bedroom Intelite
   platform: broadlink
-  host: 192.168.1.201
-  mac: B4:43:0D:FB:C9:F5
+  host: 192.168.1.203
+  mac: B4:43:0D:EF:AD:BE
   switches:
     intelite_power:
       friendly_name: "Intelite Power"
@@ -544,7 +551,7 @@ script:
       - alias: LG TV ON
         service: switch.turn_on
         data:
-          entity_id: switch.tv_lg_power
+          entity_id: switch.lg_tv_power
       - delay:
           # supports seconds, milliseconds, minutes, hours
           milliseconds: 100
@@ -629,7 +636,38 @@ script:
       - alias: Apple TV level up
         service: switch.turn_on
         data:
-          entity_id: switch.apple_tv_menu
+          entity_id: switch.apple_tv_left
+      - delay:
+          milliseconds: 100
+      - alias: Apple TV level up
+        service: switch.turn_on
+        data:
+          entity_id: switch.apple_tv_left
+      - delay:
+          milliseconds: 100
+      - alias: Apple TV level up
+        service: switch.turn_on
+        data:
+          entity_id: switch.apple_tv_left
+  movie_end:
+    alias: Movie End
+    sequence:
+      - alias: LG TV OFF
+        service: switch.turn_off
+        data:
+          entity_id: switch.lg_tv_power
+      - delay:
+          milliseconds: 100
+      - alias: Pioneer OFF
+        service: switch.turn_off
+        data:
+          entity_id: switch.pioneer_power
+      - delay:
+          milliseconds: 100
+      - alias: Cabinet light OFF
+        service: switch.turn_off
+        data:
+          entity_id: switch.livingroom_cabinet_light
 
 
 group:
