@@ -1,7 +1,8 @@
 import logging
 
 from nh.alexa.app import setup_app
-from nh.alexa.broadlink_client.client import execute, get_command_from_file
+from nh.alexa.broadlink_client.client import execute
+from nh.alexa.devices.provider import RmBase
 
 logger = logging.getLogger(__name__)
 
@@ -10,46 +11,31 @@ class ServiceError(Exception):
     pass
 
 
-ROOM_MAPPING = {
-    'livingroom': {
-
-    },
-    'bedroom': {
-
-    },
-    'childroom': {
-
-    },
-    'kitchen': {
-
-    },
-    'all': {
-
-    }
-}
-
-
 class BroadlinkService(object):
 
     def __init__(self):
         self.app = setup_app()
 
     def set_status(self, room, device, command):
-        hardware = self.app.config['HARDWARE_MAPPING'][device]
+        device_mapping = self.app.config['DEVICE_MAPPING']
+        if room not in device_mapping:
+            raise ValueError('Room not found')
+        if device not in device_mapping[room]:
+            raise ValueError('Device {} not found in {}'.format(device, room))
+        hardware_id, device_name = device_mapping[room][device]
 
-        if hardware.startswith('RM'):
-            filename = '{}/{}_{}.txt'.format(self.app.config['BROADLINK_CMD_PATH'], device, command)
+        if hardware_id.startswith('RM'):
             try:
-                code = get_command_from_file(filename)
+                code = RmBase.get_code_from_file(device_name, command)
             except IOError as err:
                 logger.error(err)
                 raise ServiceError(err)
         else:
             code = command
 
-        dev = self.app.config['HARDWARE'][hardware]
-        device_type = dev['model']
-        ip_addr = dev['ip']
-        mac_addr = dev['mac']
-        execute(device_type, ip_addr, mac_addr, code)
+        hardware = self.app.config['HARDWARE'][hardware_id]
+        hardware_type = hardware['model']
+        ip_addr = hardware['ip']
+        mac_addr = hardware['mac']
+        execute(hardware_type, ip_addr, mac_addr, code)
         return True

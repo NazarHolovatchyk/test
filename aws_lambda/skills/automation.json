@@ -1,0 +1,568 @@
+{
+  "intents": [
+    {
+      "name": "AMAZON.CancelIntent",
+      "samples": []
+    },
+    {
+      "name": "AMAZON.HelpIntent",
+      "samples": []
+    },
+    {
+      "name": "AMAZON.StopIntent",
+      "samples": []
+    },
+    {
+      "name": "AutomationIntent",
+      "samples": [
+        "set {device} in {room} to {state}",
+        "set {device} to {state}"
+      ],
+      "slots": [
+        {
+          "name": "device",
+          "type": "DeviceSlot",
+          "samples": [
+            "{device}"
+          ]
+        },
+        {
+          "name": "room",
+          "type": "AMAZON.Room",
+          "samples": []
+        },
+        {
+          "name": "state",
+          "type": "StateSlot",
+          "samples": [
+            "{state}"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "DimmLightIntent",
+      "samples": [
+        "set {room} light to {intelite_state}"
+      ],
+      "slots": [
+        {
+          "name": "room",
+          "type": "AMAZON.Room",
+          "samples": [
+            "{room}"
+          ]
+        },
+        {
+          "name": "intelite_state",
+          "type": "InteliteStateSlot",
+          "samples": [
+            "{intelite_state}"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "OnOffIntent",
+      "samples": [
+        "turn {on_off_state} {device} in {room}",
+        "turn {on_off_state} {device}"
+      ],
+      "slots": [
+        {
+          "name": "device",
+          "type": "DeviceSlot",
+          "samples": [
+            "{device}"
+          ]
+        },
+        {
+          "name": "room",
+          "type": "AMAZON.Room",
+          "samples": []
+        },
+        {
+          "name": "on_off_state",
+          "type": "OnOffSlot",
+          "samples": [
+            "{on_off_state}"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "VersionIntent",
+      "samples": [
+        "what is service version"
+      ],
+      "slots": []
+    }
+  ],
+  "types": [
+    {
+      "name": "ButtonSlot",
+      "values": [
+        {
+          "id": null,
+          "name": {
+            "value": "ok",
+            "synonyms": []
+          }
+        },
+        {
+          "id": null,
+          "name": {
+            "value": "menu",
+            "synonyms": []
+          }
+        },
+        {
+          "id": null,
+          "name": {
+            "value": "back",
+            "synonyms": []
+          }
+        },
+        {
+          "id": null,
+          "name": {
+            "value": "exit",
+            "synonyms": []
+          }
+        },
+        {
+          "id": null,
+          "name": {
+            "value": "okay",
+            "synonyms": []
+          }
+        },
+        {
+          "id": null,
+          "name": {
+            "value": "left",
+            "synonyms": []
+          }
+        },
+        {
+          "id": null,
+          "name": {
+            "value": "right",
+            "synonyms": []
+          }
+        },
+        {
+          "id": null,
+          "name": {
+            "value": "down",
+            "synonyms": []
+          }
+        },
+        {
+          "id": null,
+          "name": {
+            "value": "up",
+            "synonyms": []
+          }
+        },
+        {
+          "id": null,
+          "name": {
+            "value": "play",
+            "synonyms": []
+          }
+        },
+        {
+          "id": null,
+          "name": {
+            "value": "pause",
+            "synonyms": []
+          }
+        },
+        {
+          "id": null,
+          "name": {
+            "value": "source",
+            "synonyms": []
+          }
+        }
+      ]
+    },
+    {
+      "name": "DeviceSlot",
+      "values": [
+        {
+          "id": null,
+          "name": {
+            "value": "light",
+            "synonyms": []
+          }
+        },
+        {
+          "id": null,
+          "name": {
+            "value": "iron",
+            "synonyms": []
+          }
+        },
+        {
+          "id": null,
+          "name": {
+            "value": "t. v.",
+            "synonyms": []
+          }
+        },
+        {
+          "id": null,
+          "name": {
+            "value": "apple",
+            "synonyms": []
+          }
+        },
+        {
+          "id": null,
+          "name": {
+            "value": "audio",
+            "synonyms": []
+          }
+        }
+      ]
+    },
+    {
+      "name": "InteliteLevelSlot",
+      "values": [
+        {
+          "id": null,
+          "name": {
+            "value": "one",
+            "synonyms": []
+          }
+        },
+        {
+          "id": null,
+          "name": {
+            "value": "two",
+            "synonyms": []
+          }
+        },
+        {
+          "id": null,
+          "name": {
+            "value": "five",
+            "synonyms": []
+          }
+        },
+        {
+          "id": null,
+          "name": {
+            "value": "eight",
+            "synonyms": []
+          }
+        },
+        {
+          "id": null,
+          "name": {
+            "value": "ten",
+            "synonyms": []
+          }
+        }
+      ]
+    },
+    {
+      "name": "InteliteStateSlot",
+      "values": [
+        {
+          "id": null,
+          "name": {
+            "value": "on",
+            "synonyms": []
+          }
+        },
+        {
+          "id": null,
+          "name": {
+            "value": "off",
+            "synonyms": []
+          }
+        },
+        {
+          "id": null,
+          "name": {
+            "value": "max",
+            "synonyms": []
+          }
+        },
+        {
+          "id": null,
+          "name": {
+            "value": "sleep",
+            "synonyms": []
+          }
+        },
+        {
+          "id": null,
+          "name": {
+            "value": "level one",
+            "synonyms": []
+          }
+        },
+        {
+          "id": null,
+          "name": {
+            "value": "level two",
+            "synonyms": []
+          }
+        },
+        {
+          "id": null,
+          "name": {
+            "value": "level five",
+            "synonyms": []
+          }
+        },
+        {
+          "id": null,
+          "name": {
+            "value": "level eight",
+            "synonyms": []
+          }
+        },
+        {
+          "id": null,
+          "name": {
+            "value": "level ten",
+            "synonyms": []
+          }
+        },
+        {
+          "id": null,
+          "name": {
+            "value": "sleep one",
+            "synonyms": []
+          }
+        },
+        {
+          "id": null,
+          "name": {
+            "value": "sleep two",
+            "synonyms": []
+          }
+        },
+        {
+          "id": null,
+          "name": {
+            "value": "sleep three",
+            "synonyms": []
+          }
+        },
+        {
+          "id": null,
+          "name": {
+            "value": "sleep four",
+            "synonyms": []
+          }
+        }
+      ]
+    },
+    {
+      "name": "OnOffSlot",
+      "values": [
+        {
+          "id": null,
+          "name": {
+            "value": "on",
+            "synonyms": []
+          }
+        },
+        {
+          "id": null,
+          "name": {
+            "value": "off",
+            "synonyms": []
+          }
+        }
+      ]
+    },
+    {
+      "name": "StateSlot",
+      "values": [
+        {
+          "id": null,
+          "name": {
+            "value": "mute",
+            "synonyms": []
+          }
+        },
+        {
+          "id": null,
+          "name": {
+            "value": "unmute",
+            "synonyms": []
+          }
+        }
+      ]
+    }
+  ],
+  "prompts": [
+    {
+      "id": "Elicit.Intent-AutomationIntent.IntentSlot-device",
+      "promptVersion": "1.0",
+      "definitionVersion": "1.0",
+      "variations": [
+        {
+          "type": "PlainText",
+          "value": "what device"
+        }
+      ]
+    },
+    {
+      "id": "Elicit.Intent-AutomationIntent.IntentSlot-state",
+      "promptVersion": "1.0",
+      "definitionVersion": "1.0",
+      "variations": [
+        {
+          "type": "PlainText",
+          "value": "what state"
+        }
+      ]
+    },
+    {
+      "id": "Elicit.Intent-DimmLightIntent.IntentSlot-room",
+      "promptVersion": "1.0",
+      "definitionVersion": "1.0",
+      "variations": [
+        {
+          "type": "PlainText",
+          "value": "what room"
+        }
+      ]
+    },
+    {
+      "id": "Elicit.Intent-DimmLightIntent.IntentSlot-intelite_state",
+      "promptVersion": "1.0",
+      "definitionVersion": "1.0",
+      "variations": [
+        {
+          "type": "PlainText",
+          "value": "what is state"
+        }
+      ]
+    },
+    {
+      "id": "Elicit.Intent-OnOffIntent.IntentSlot-device",
+      "promptVersion": "1.0",
+      "definitionVersion": "1.0",
+      "variations": [
+        {
+          "type": "PlainText",
+          "value": "what device"
+        }
+      ]
+    },
+    {
+      "id": "Elicit.Intent-OnOffIntent.IntentSlot-on_off_state",
+      "promptVersion": "1.0",
+      "definitionVersion": "1.0",
+      "variations": [
+        {
+          "type": "PlainText",
+          "value": "what is state"
+        }
+      ]
+    }
+  ],
+  "dialog": {
+    "version": "1.0",
+    "intents": [
+      {
+        "name": "AutomationIntent",
+        "confirmationRequired": false,
+        "prompts": {},
+        "slots": [
+          {
+            "name": "device",
+            "type": "DeviceSlot",
+            "elicitationRequired": true,
+            "confirmationRequired": false,
+            "prompts": {
+              "elicit": "Elicit.Intent-AutomationIntent.IntentSlot-device"
+            }
+          },
+          {
+            "name": "room",
+            "type": "AMAZON.Room",
+            "elicitationRequired": false,
+            "confirmationRequired": false,
+            "prompts": {}
+          },
+          {
+            "name": "state",
+            "type": "StateSlot",
+            "elicitationRequired": true,
+            "confirmationRequired": false,
+            "prompts": {
+              "elicit": "Elicit.Intent-AutomationIntent.IntentSlot-state"
+            }
+          }
+        ]
+      },
+      {
+        "name": "DimmLightIntent",
+        "confirmationRequired": false,
+        "prompts": {},
+        "slots": [
+          {
+            "name": "room",
+            "type": "AMAZON.Room",
+            "elicitationRequired": true,
+            "confirmationRequired": false,
+            "prompts": {
+              "elicit": "Elicit.Intent-DimmLightIntent.IntentSlot-room"
+            }
+          },
+          {
+            "name": "intelite_state",
+            "type": "InteliteStateSlot",
+            "elicitationRequired": true,
+            "confirmationRequired": false,
+            "prompts": {
+              "elicit": "Elicit.Intent-DimmLightIntent.IntentSlot-intelite_state"
+            }
+          }
+        ]
+      },
+      {
+        "name": "OnOffIntent",
+        "confirmationRequired": false,
+        "prompts": {},
+        "slots": [
+          {
+            "name": "device",
+            "type": "DeviceSlot",
+            "elicitationRequired": true,
+            "confirmationRequired": false,
+            "prompts": {
+              "elicit": "Elicit.Intent-OnOffIntent.IntentSlot-device"
+            }
+          },
+          {
+            "name": "room",
+            "type": "AMAZON.Room",
+            "elicitationRequired": false,
+            "confirmationRequired": false,
+            "prompts": {}
+          },
+          {
+            "name": "on_off_state",
+            "type": "OnOffSlot",
+            "elicitationRequired": true,
+            "confirmationRequired": false,
+            "prompts": {
+              "elicit": "Elicit.Intent-OnOffIntent.IntentSlot-on_off_state"
+            }
+          }
+        ]
+      }
+    ]
+  }
+}

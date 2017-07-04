@@ -9,3 +9,5 @@ py2
 *.pyc
 .idea/
 .DS_Store
+build/
+dist/

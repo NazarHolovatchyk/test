@@ -20,13 +20,50 @@ class Config(object):
 
     HARDWARE_MAPPING = {
         'intelite': 'RM_MINI_1',
+        'intelite2': 'RM_MINI_2',
         'apple_tv': 'RM_PRO',
         'lg_tv': 'RM_PRO',
         'pioneer': 'RM_PRO',
-        'light': 'SP2_LR_CAB',
+        'cabinet': 'SP2_LR_CAB',
         'iron': 'SP2_CR_IRON',
         'cooking': 'SP2_K_COOK',
         'sony_tv': 'RM_MINI_2'
+    }
+    DEVICE_MAPPING = {
+        'global': {
+            'light': ['SP2_LR_CAB', None],
+            'tv': ['RM_PRO', 'lg_tv'],
+            'apple': ['RM_PRO', 'apple_tv'],
+            'audio': ['RM_PRO', 'pioneer']
+        },
+        'livingroom': {
+            'light': ['SP2_LR_CAB', None],
+            'tv': ['RM_PRO', 'lg_tv'],
+            'apple': ['RM_PRO', 'apple_tv'],
+            'audio': ['RM_PRO', 'pioneer']
+        },
+        'bedroom': {
+            'light': ['RM_MINI_1', 'intelite']
+        },
+        'childroom': {
+            'light': ['RM_MINI_2', 'intelite'],
+            'tv': ['RM_MINI_2', 'sony_tv']
+        },
+        'kitchen': {
+
+        },
+        'bathroom': {
+
+        },
+        'cabinet': {
+
+        }
+    }
+
+    SCENES = {
+        'movie': [
+            {'room': '', 'device': '', 'status': ''}
+        ]
     }
 
     BROADLINK_CMD_PATH = BASE_DIR + '/nh/alexa/broadlink_client/cmd'

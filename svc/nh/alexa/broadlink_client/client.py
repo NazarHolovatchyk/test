@@ -9,7 +9,6 @@ from datetime import datetime, timedelta
 
 import broadlink
 
-
 logger = logging.getLogger(__name__)
 
 DEFAULT_TIMEOUT = 10
@@ -30,11 +29,11 @@ class BroadlinkBase(object):
     """Representation of a basic Broadlink device"""
 
     def __init__(self, device=None):
-        self._device = device
+        self.device = device
 
     def learn_command(self):
         try:
-            auth = self._device.auth()
+            auth = self.device.auth()
         except socket.timeout:
             logger.error("Failed to connect to device, timeout.")
             return False
@@ -42,12 +41,12 @@ class BroadlinkBase(object):
             logger.error("Failed to connect to device.")
             return False
 
-        self._device.enter_learning()
+        self.device.enter_learning()
 
         logger.info("Press the key you want to learn")
         start_time = datetime.utcnow()
         while (datetime.utcnow() - start_time) < timedelta(seconds=10):
-            packet = self._device.check_data()
+            packet = self.device.check_data()
             if packet:
                 log_msg = 'Received packet is: {}'.format(b64encode(packet).decode('utf8'))
                 logger.info(log_msg)
@@ -63,7 +62,7 @@ class BroadlinkBase(object):
 
     def _send_data(self, packet, retry=DEFAULT_RETRY):
         try:
-            self._device.send_data(self._get_payload(packet))
+            self.device.send_data(self._get_payload(packet))
         except (socket.timeout, ValueError) as err:
             if retry < 1:
                 logger.error("Failed to send packet to device: {}".format(err))
@@ -73,11 +72,11 @@ class BroadlinkBase(object):
 
     def auth(self, retry=DEFAULT_RETRY):
         try:
-            auth_result = self._device.auth()
+            auth_result = self.device.auth()
         except socket.timeout:
             auth_result = False
         if not auth_result and retry > 0:
-            return self.auth(max(0, retry-1))
+            return self.auth(max(0, retry - 1))
         return auth_result
 
 
@@ -89,9 +88,11 @@ class BroadlinkRMSwitch(BroadlinkBase):
         device = broadlink.rm((ip_addr, 80), mac_addr)
         super(BroadlinkRMSwitch, self).__init__(device)
 
-    def send(self, packet):
+    def send(self, command):
         """Send packet to device."""
-        self._device.send_data(packet)
+        self.device.auth()
+        packet = b64decode(command)
+        self.device.send_data(packet)
 
 
 class BroadlinkSP1Switch(BroadlinkBase):
@@ -101,8 +102,6 @@ class BroadlinkSP1Switch(BroadlinkBase):
         """Initialize the switch."""
         device = broadlink.sp1((ip_addr, 80), mac_addr)
         super(BroadlinkSP1Switch, self).__init__(device)
-        # self._command_on = 1
-        # self._command_off = 0
 
     @staticmethod
     def _get_payload(packet):
@@ -117,52 +116,52 @@ class BroadlinkSP1Switch(BroadlinkBase):
     def _sendpacket(self, packet, retry=2):
         """Send packet to device."""
         try:
-            self._device.set_power(packet)
+            self.device.set_power(packet)
         except (socket.timeout, ValueError) as error:
             if retry < 1:
                 logger.error(error)
                 return False
             if not self.auth():
                 return False
-            return self._sendpacket(packet, max(0, retry-1))
+            return self._sendpacket(packet, max(0, retry - 1))
         return True
 
 
 class BroadlinkSP2Switch(BroadlinkBase):
-    """Representation of an Broadlink switch."""
+    """Representation of an Broadlink SP2 switch."""
 
-    def __init__(self, device):
+    def __init__(self, ip_addr, mac_addr):
         """Initialize the switch."""
-        device = broadlink.sp2((ip_addr, 80), mac_addr)
-        super(BroadlinkSP2Switch, self).__init__(device)
+        self.device = broadlink.sp2((ip_addr, 80), mac_addr)
+        super(BroadlinkSP2Switch, self).__init__(self.device)
 
-    @property
-    def assumed_state(self):
-        """Return true if unable to access real state of entity."""
-        return False
+    def send(self, command):
+        self.device.auth()
+        if str(command).lower() in ['on', '1', 'yes', 'true']:
+            status = 1
+        elif str(command).lower() in ['off', '0', 'no', 'false']:
+            status = 0
+        else:
+            raise ValueError('Unknown command: {}'.format(command))
+        self.device.set_power(status)
 
-    @property
-    def should_poll(self):
-        """Polling needed."""
-        return True
-
-    def update(self):
+    def get_status(self):
         """Synchronize state with switch."""
-        self._update()
+        return self._update()
 
     def _update(self, retry=2):
         try:
-            state = self._device.check_power()
+            state = self.device.check_power()
         except (socket.timeout, ValueError) as error:
             if retry < 1:
                 logger.error(error)
-                return
+                raise IOError('Cannot get status. Max retries exceeded.')
             if not self.auth():
-                return
-            return self._update(max(0, retry-1))
+                raise IOError('Cannot get status. Device authentication failed.')
+            return self._update(max(0, retry - 1))
         if state is None and retry > 0:
-            return self._update(max(0, retry-1))
-        self._state = state
+            return self._update(max(0, retry - 1))
+        return state
 
 
 def execute(device_type, ip_addr, mac_addr, command):
@@ -178,9 +177,3 @@ def execute(device_type, ip_addr, mac_addr, command):
         device_type.set_power(status)
     else:
         raise ValueError('Unknown device. Available: rm, sp2')
-
-
-def get_command_from_file(file_path):
-    with open(file_path, 'r') as f:
-        code = f.read()
-    return code
