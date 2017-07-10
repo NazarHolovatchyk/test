@@ -7,9 +7,18 @@ def put(url, data):
     request = urllib2.Request(url, data=json.dumps(data))
     request.add_header('Content-Type', 'application/json')
     request.get_method = lambda: 'PUT'
-    response = opener.open(request)
-    status_code = response.code
-    content = response.read()
+    try:
+        response = opener.open(request)
+    except urllib2.HTTPError as err:
+        if err.code in [400, 501]:
+            status_code = err.code
+            content = err.msg
+        else:
+            raise
+    else:
+        status_code = response.code
+        content = response.read()
+
     response_data = {}
     try:
         response_data = json.loads(content)
@@ -22,9 +31,18 @@ def get(url):
     opener = urllib2.build_opener(urllib2.HTTPHandler)
     request = urllib2.Request(url)
     request.get_method = lambda: 'GET'
-    response = opener.open(request)
-    status_code = response.code
-    content = response.read()
+    try:
+        response = opener.open(request)
+    except urllib2.HTTPError as err:
+        if err.code in [400, 501]:
+            status_code = err.code
+            content = err.msg
+        else:
+            raise
+    else:
+        status_code = response.code
+        content = response.read()
+
     response_data = {}
     try:
         response_data = json.loads(content)

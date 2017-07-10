@@ -14,7 +14,7 @@ def setup_app(environment=None):
     app = Flask(__name__)
     if not environment:
         environment = os.environ.get('ALEXA_SVC_ENV', 'base')
-    config_class = 'nh.alexa.settings.{}.Config'.format(environment)
+    config_class = 'nh.smarty.settings.{}.Config'.format(environment)
     app.config.from_object(config_class)
     # app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
     app.config.from_envvar("APP_CONFIG", silent=True)

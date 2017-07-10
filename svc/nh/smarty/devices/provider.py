@@ -1,7 +1,7 @@
 import logging
 
-from nh.alexa.app import setup_app
-from nh.alexa.broadlink_client import client
+from nh.smarty.app import setup_app
+from nh.smarty.broadlink_client import client
 
 app = setup_app()
 

@@ -1,4 +1,4 @@
-from nh.alexa.devices import provider
+from nh.smarty.devices import provider
 
 
 class Device(object):

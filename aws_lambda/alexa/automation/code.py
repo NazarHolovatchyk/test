@@ -91,7 +91,7 @@ def automation_intent(intent, session):
         map = {
             'on': 'on',
             'off': 'off',
-            'max': 'max',
+            'maximum': 'max',
             'level one': 'w1',
             'level two': 'w2',
             'level five': 'w5',
@@ -100,15 +100,24 @@ def automation_intent(intent, session):
             'sleep one': 'sleep1',
             'sleep two': 'sleep2',
             'sleep three': 'sleep3',
-            'sleep four': 'sleep4'
+            'sleep four': 'sleep4',
+            'level 1': 'w1',
+            'level 2': 'w2',
+            'level 5': 'w5',
+            'level 8': 'w8',
+            'level 10': 'w10',
+            'sleep 1': 'sleep1',
+            'sleep 2': 'sleep2',
+            'sleep 3': 'sleep3',
+            'sleep 4': 'sleep4'
         }
         if state not in map:
             speech = build_speechlet_response('Unexpected state {}'.format(state), intent['name'])
             return build_response(speech)
         status = map[state]
     elif intent['name'] == "OnOffIntent":
-        device = slots['device']['value']
-        status = '1' if slots['status'].get('value') == 'on' else '0'
+        device = slots['device']['value'].replace('the ', '')
+        status = '1' if slots['on_off_state'].get('value') == 'on' else '0'
     else:
         device = slots['device']['value']
         status = slots['status'].get('value')
@@ -119,7 +128,10 @@ def automation_intent(intent, session):
     }
     print('Request PUT: {} data={}'.format(uri, data))
 
-    status_code, response_data = put(uri, data=data)
+    try:
+        status_code, response_data = put(uri, data=data)
+    except HTTPError as err:
+        pass
     print('Automation service response: {} - {}'.format(status_code, response_data))
 
     if status_code == 200:
@@ -280,7 +292,7 @@ if __name__ == '__main__':
                 "name": "DimmLightIntent",
                 'slots': {
                     'room': {
-                        'value': 'global'
+                        'value': 'bedroom'
                     },
                     'intelite_state': {
                         'value': 'sleep one'

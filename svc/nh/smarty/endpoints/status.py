@@ -1,5 +1,5 @@
-from nh.alexa.endpoints.base import BaseResource
-from nh.alexa import __version__ as package_version
+from nh.smarty.endpoints.base import BaseResource
+from nh.smarty import __version__ as package_version
 
 
 class Status(BaseResource):

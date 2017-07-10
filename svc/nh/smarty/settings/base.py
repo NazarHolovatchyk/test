@@ -34,7 +34,8 @@ class Config(object):
             'light': ['SP2_LR_CAB', None],
             'tv': ['RM_PRO', 'lg_tv'],
             'apple': ['RM_PRO', 'apple_tv'],
-            'audio': ['RM_PRO', 'pioneer']
+            'audio': ['RM_PRO', 'pioneer'],
+            'iron': ['SP2_CR_IRON', None]
         },
         'livingroom': {
             'light': ['SP2_LR_CAB', None],
@@ -47,7 +48,8 @@ class Config(object):
         },
         'childroom': {
             'light': ['RM_MINI_2', 'intelite'],
-            'tv': ['RM_MINI_2', 'sony_tv']
+            'tv': ['RM_MINI_2', 'sony_tv'],
+            'iron': ['SP2_CR_IRON', None]
         },
         'kitchen': {
 
@@ -66,4 +68,4 @@ class Config(object):
         ]
     }
 
-    BROADLINK_CMD_PATH = BASE_DIR + '/nh/alexa/broadlink_client/cmd'
+    BROADLINK_CMD_PATH = BASE_DIR + '/nh/smarty/broadlink_client/cmd'

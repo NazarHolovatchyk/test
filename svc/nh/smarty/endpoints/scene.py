@@ -1,7 +1,7 @@
 import logging
 
-from nh.alexa.endpoints.base import BaseResource
-from nh.alexa.services.broadlink_svc import BroadlinkService, ServiceError
+from nh.smarty.endpoints.base import BaseResource
+from nh.smarty.services.broadlink_svc import BroadlinkService, ServiceError
 
 logger = logging.getLogger(__name__)
 

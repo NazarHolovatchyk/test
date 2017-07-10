@@ -2,9 +2,9 @@ import logging
 
 from flask_restful import Api
 
-from nh.alexa.app import setup_app
-from nh.alexa.endpoints.automation import AutomationEndpoint
-from nh.alexa.endpoints.status import Status
+from nh.smarty.app import setup_app
+from nh.smarty.endpoints.automation import AutomationEndpoint
+from nh.smarty.endpoints.status import Status
 
 logging.basicConfig(level=logging.INFO)
 
@@ -20,4 +20,4 @@ api = Api(app)
 register_resources(api)
 
 if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=5555, debug=app.config['DEBUG'])
+    app.run(host='0.0.0.0', port=5000, debug=app.config['DEBUG'])

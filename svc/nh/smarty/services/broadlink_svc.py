@@ -1,8 +1,8 @@
 import logging
 
-from nh.alexa.app import setup_app
-from nh.alexa.broadlink_client.client import execute
-from nh.alexa.devices.provider import RmBase
+from nh.smarty.app import setup_app
+from nh.smarty.broadlink_client.client import execute
+from nh.smarty.devices.provider import RmBase
 
 logger = logging.getLogger(__name__)
 
