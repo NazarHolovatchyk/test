@@ -1,0 +1,19 @@
+---
+
+- name: nginx restart
+  service: name=nginx state=restarted
+  tags:
+    - smarty
+    - nginx
+
+- name: nginx reload
+  service: name=nginx state=reloaded
+  tags:
+    - smarty
+    - nginx
+
+- name: supervisor restart
+  supervisorctl: state=restarted name=smarty
+  tags:
+    - smarty
+    - supervisor

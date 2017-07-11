@@ -1,0 +1,18 @@
+
+- name: Install Supervisor
+  apt: name=supervisor state=present update_cache={{ update_apt_cache }}
+  tags:
+    - smarty
+    - supervisor
+
+- name: Compile Supervisor configuration
+  template: src=supervisor.conf.j2
+            dest=/etc/supervisor/conf.d/smarty.conf
+            mode=0644
+  notify:
+    - supervisor restart
+  tags:
+    - smarty
+    - supervisor
+# owner={{ app_user }}
+# group={{ app_group }}

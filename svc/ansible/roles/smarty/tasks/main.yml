@@ -1,0 +1,9 @@
+---
+
+- debug: msg="System host {{ inventory_hostname }}"
+- debug: msg="Virtulaenv - {{ virtualenv_path }}"
+
+- include: setup_virtualenv.yml
+- include: setup_smarty.yml
+- include: setup_supervisor.yml
+# - include: setup_nginx.yml

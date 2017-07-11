@@ -1,0 +1,25 @@
+---
+
+- name: Ensure bash, OpenSSl, and libssl are the latest versions
+  apt: name={{ item }} update_cache={{ update_apt_cache }} state=latest
+  with_items:
+    - bash
+    - openssl
+    - libssl-dev
+    - libssl-doc
+  tags: packages
+
+- name: Install base packages
+  apt: name={{ item }} update_cache={{ update_apt_cache }} force=yes state=installed
+  with_items:
+    # - software-properties-common
+    # - python-software-properties
+    - build-essential
+    - module-assistant
+    - git
+    - vim
+  tags: packages
+
+- name: Auto-remove old apt packages
+  command: sudo apt-get autoremove -y
+  tags: packages

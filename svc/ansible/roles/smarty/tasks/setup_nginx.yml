@@ -1,0 +1,38 @@
+---
+- name: Install Nginx
+  apt: name=nginx state=latest update_cache={{ update_apt_cache }}
+  tags:
+    - smarty
+    - nginx
+
+- name: Compile Nginx configuration
+  template: src=nginx.conf.j2
+            dest=/etc/nginx/sites-available/smarty.conf
+            owner={{ app_user }}
+            group={{ app_group }}
+            mode=0644
+  notify: nginx restart
+  tags:
+    - smarty
+    - nginx
+
+- name: Create symlink to Vendor Machine webapp
+  file: src=/etc/nginx/sites-available/smarty.conf
+        dest=/etc/nginx/sites-enabled/smarty.conf
+        state=link
+  notify: nginx reload
+  tags:
+    - smarty
+    - nginx
+
+- name: Remove default Nginx config
+  file: path=/etc/nginx/sites-enabled/default state=absent
+  tags:
+    - smarty
+    - nginx
+
+- name: Ensure that the Nginx service is running
+  service: name=nginx state=started enabled=yes
+  tags:
+    - smarty
+    - nginx

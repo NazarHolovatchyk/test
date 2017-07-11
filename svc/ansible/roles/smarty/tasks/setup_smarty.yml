@@ -1,0 +1,31 @@
+---
+
+- name: Delete all .pyc files
+  command: find . -name '*.pyc' -delete
+  args:
+    chdir: "{{ project_path }}"
+  tags:
+    - smarty
+    - push_updates
+
+- name: Delete logs
+  command: sudo rm -rf {{ application_log_dir }}
+  args:
+    removes: "{{ application_log_dir }}"
+  tags: smarty
+
+- name: Create the application log folder
+  file: path={{ application_log_dir }}
+        mode=0774
+        state=directory
+        owner={{ app_user }}
+        group={{ app_group }}
+  tags: smarty
+
+#- name: Create the application log file
+#  file: path={{ application_log_file }}
+#        owner={{ app_user }}
+#        group={{ app_group }}
+#        mode=0664
+#        state=touch
+#  tags: smarty

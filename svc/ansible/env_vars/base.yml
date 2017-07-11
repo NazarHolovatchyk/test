@@ -1,0 +1,24 @@
+---
+
+application_name: smarty
+base_path: "/home/pi"
+project_path: "{{ base_path }}/smarty"
+log_path: "{{ project_path }}/logs"
+virtualenv_path: "{{ project_path }}/venv"
+rebuild_virtualenv: no
+requirements_file: "{{ project_path }}/svc/requirements.txt"
+
+app_user: pi
+app_group: pi
+home_dir: "/home/{{ app_user }}"
+update_apt_cache: no
+
+# GitHub
+git_branch: tmp
+git_use_key: no
+# Use username and password
+git_repo_https: https://{{ git_token }}@github.com/NazarHolovatchyk/test.git
+# Use SSH key
+git_repo_ssh: git@github.com:NazarHolovatchyk/test.git
+automation_key: ""
+git_key: ""

@@ -11,4 +11,3 @@ py2
 .DS_Store
 build/
 dist/
-ansible/

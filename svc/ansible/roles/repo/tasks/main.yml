@@ -1,0 +1,32 @@
+---
+
+- name: Copy automation private key
+  copy: src="{{ automation_key }}"
+    dest={{ git_key }}
+    mode=0400
+    owner={{ app_user }}
+    group={{ app_group }}
+  when: git_use_key
+  tags:
+    - sshkey
+
+- name: Update Git repo
+  git: repo={{ git_repo_ssh }}
+    dest={{ project_path }}
+    version={{ git_branch }}
+    accept_hostkey=yes
+    key_file={{ git_key }}
+  when: git_use_key
+  tags:
+    - git
+    - push_updates
+
+- name: Update Git repo
+  git: repo={{ git_repo_https }}
+    dest={{ project_path }}
+    version={{ git_branch }}
+    accept_hostkey=yes
+  when: not git_use_key
+  tags:
+    - git
+    - push_updates

@@ -1,0 +1,4 @@
+---
+
+nginx_fqdn: "{{ inventory_hostname }}"
+nginx_port: 80

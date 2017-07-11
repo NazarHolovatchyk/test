@@ -1,0 +1,17 @@
+---
+
+git_branch: develop
+
+git_use_key: yes
+
+# Use username and password
+git_user: ""
+git_password: ""
+# git_repo_https: https://{{ git_user }}:{{ git_password }}@github.com/nh/smarty.git
+git_repo_https: ""
+
+# Use SSH key
+# git_repo_ssh: git@github.com:nh/smarty.git
+git_repo_ssh: ""
+automation_key: ""
+git_key: "~/.ssh/id_rsa"
