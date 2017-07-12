@@ -9,13 +9,13 @@
     - push_updates
 
 - name: Delete logs
-  command: sudo rm -rf {{ application_log_dir }}
+  command: rm -rf {{ log_path }}
   args:
-    removes: "{{ application_log_dir }}"
+    removes: "{{ log_path }}"
   tags: smarty
 
 - name: Create the application log folder
-  file: path={{ application_log_dir }}
+  file: path={{ log_path }}
         mode=0774
         state=directory
         owner={{ app_user }}
@@ -23,7 +23,7 @@
   tags: smarty
 
 #- name: Create the application log file
-#  file: path={{ application_log_file }}
+#  file: path={{ log_path }}
 #        owner={{ app_user }}
 #        group={{ app_group }}
 #        mode=0664

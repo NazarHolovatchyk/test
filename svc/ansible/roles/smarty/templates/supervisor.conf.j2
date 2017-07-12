@@ -1,6 +1,6 @@
 [program:smarty]
-directory = {{ project_path }}
-command = {{ virtualenv_path }}/bin/python {{ project_path }}/run_app.py
+directory = {{ project_path }}/svc
+command = {{ virtualenv_path }}/bin/python {{ project_path }}/svc/run_app.py
 autostart = true
 stdout_logfile = {{ log_path }}/smarty_supervisor.log
 redirect_stderr = true
