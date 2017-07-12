@@ -15,7 +15,7 @@ class Config(object):
         'RM_MINI_2': {'ip': '192.168.1.205', 'mac': 'B4:43:0D:EF:AD:B7', 'model': 'rm'},
         'SP2_LR_CAB': {'ip': '192.168.1.202', 'mac': '34:EA:34:F1:B0:67', 'model': 'sp2'},
         'SP2_CR_IRON': {'ip': '192.168.1.204', 'mac': '34:EA:34:E4:05:A5', 'model': 'sp2'},
-        'SP2_K_COOK': {'ip': '192.168.1.206', 'mac': '34:EA:34:F1:AC:39', 'model': 'sp2'}
+        'SP2_DOORBELL': {'ip': '192.168.1.206', 'mac': '34:EA:34:F1:AC:39', 'model': 'sp2'}
     }
 
     HARDWARE_MAPPING = {
@@ -26,16 +26,17 @@ class Config(object):
         'pioneer': 'RM_PRO',
         'cabinet': 'SP2_LR_CAB',
         'iron': 'SP2_CR_IRON',
-        'cooking': 'SP2_K_COOK',
+        'door': 'SP2_DOORBELL',
         'sony_tv': 'RM_MINI_2'
     }
     DEVICE_MAPPING = {
-        'global': {
+        'house': {
             'light': ['SP2_LR_CAB', None],
             'tv': ['RM_PRO', 'lg_tv'],
             'apple': ['RM_PRO', 'apple_tv'],
             'audio': ['RM_PRO', 'pioneer'],
-            'iron': ['SP2_CR_IRON', None]
+            'iron': ['SP2_CR_IRON', None],
+            'door': ['SP2_DOORBELL', None]
         },
         'livingroom': {
             'light': ['SP2_LR_CAB', None],

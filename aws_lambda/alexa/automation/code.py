@@ -12,7 +12,7 @@ import json
 # import requests
 
 from common.context import get_context
-from common.alexa import build_speechlet_response, build_response
+from common.alexa import build_response
 from common.automation import put, get
 
 
@@ -20,15 +20,13 @@ def get_welcome_response():
     """ If we wanted to initialize the session to have some attributes we could add those here"""
     card_title = "Welcome"
     speech_output = "Welcome to the Alexa Skills Kit sample"
-    speech = build_speechlet_response(speech_output, card_title, should_end_session=False)
-    return build_response(speech)
+    return build_response(speech_output, card_title, should_end_session=False)
 
 
 def handle_session_end_request():
     card_title = "Session Ended"
-    speech_output = "Thank you for trying the Alexa Skills Kit sample."
-    resp = build_speechlet_response(speech_output, card_title)
-    return build_response({}, resp)
+    speech_output = "bay"
+    return build_response(speech_output, card_title)
 
 
 def create_favorite_color_attributes(favorite_color):
@@ -54,8 +52,8 @@ def set_color_in_session(intent, session):
         reprompt_text = "I'm not sure what your favorite color is. " \
                         "You can tell me your favorite color by saying, " \
                         "my favorite color is red."
-    speech = build_speechlet_response(speech_output, card_title, reprompt_text, should_end_session=False)
-    return build_response(speech, session_attributes)
+    return build_response(speech_output, card_title, reprompt_text, should_end_session=False,
+                          session_attributes=session_attributes)
 
 
 def get_color_from_session(intent, session):
@@ -72,8 +70,7 @@ def get_color_from_session(intent, session):
     # Setting reprompt_text to None signifies that we do not want to reprompt
     # the user. If the user does not respond or says something that is not
     # understood, the session will end.
-    speech = build_speechlet_response(speech_output, intent['name'], reprompt_text, should_end_session)
-    return build_response(speech)
+    return build_response(speech_output, intent['name'], reprompt_text, should_end_session)
 
 
 def automation_intent(intent, session):
@@ -84,7 +81,7 @@ def automation_intent(intent, session):
     uri = url + '/v1/automation'
 
     slots = intent.get('slots', {})
-    room = slots['room'].get('value', 'global')
+    room = slots['room'].get('value', 'house')
     if intent['name'] == "DimmLightIntent":
         device = 'light'
         state = slots['intelite_state'].get('value')
@@ -112,8 +109,7 @@ def automation_intent(intent, session):
             'sleep 4': 'sleep4'
         }
         if state not in map:
-            speech = build_speechlet_response('Unexpected state {}'.format(state), intent['name'])
-            return build_response(speech)
+            return build_response('Unexpected state {}'.format(state), intent['name'])
         status = map[state]
     elif intent['name'] == "OnOffIntent":
         device = slots['device']['value'].replace('the ', '')
@@ -128,10 +124,7 @@ def automation_intent(intent, session):
     }
     print('Request PUT: {} data={}'.format(uri, data))
 
-    try:
-        status_code, response_data = put(uri, data=data)
-    except HTTPError as err:
-        pass
+    status_code, response_data = put(uri, data=data)
     print('Automation service response: {} - {}'.format(status_code, response_data))
 
     if status_code == 200:
@@ -140,8 +133,7 @@ def automation_intent(intent, session):
         speech_output = response_data.get('error', 'error')
     else:
         speech_output = 'error'
-    speech = build_speechlet_response(speech_output, intent['name'])
-    return build_response(speech)
+    return build_response(speech_output, intent['name'])
 
 
 def scene_intent(intent, session):
@@ -167,8 +159,7 @@ def scene_intent(intent, session):
         speech_output = 'done'
     else:
         speech_output = 'error'
-    speech = build_speechlet_response(speech_output, intent['name'])
-    return build_response(speech)
+    return build_response(speech_output, intent['name'])
 
 
 def version_intent(intent, session):
@@ -191,8 +182,7 @@ def version_intent(intent, session):
         data = json.loads(content)
         version = data['version']
         speech_output = 'Automation service version is {}'.format(version)
-    speech = build_speechlet_response(speech_output, intent['name'])
-    return build_response(speech)
+    return build_response(speech_output, intent['name'])
 
 
 # --------------- Events ------------------

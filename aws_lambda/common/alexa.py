@@ -1,6 +1,6 @@
 
-def build_speechlet_response(output, title='Automation', reprompt_text='', should_end_session=True):
-    return {
+def build_response(output, title='Automation', reprompt_text='', should_end_session=True, session_attributes=None):
+    speechlet = {
         'outputSpeech': {
             'type': 'PlainText',
             'text': output
@@ -18,13 +18,10 @@ def build_speechlet_response(output, title='Automation', reprompt_text='', shoul
         },
         'shouldEndSession': should_end_session
     }
-
-
-def build_response(speechlet_response, session_attributes=None):
     response = {
         'version': '1.0',
         'sessionAttributes': session_attributes or {},
-        'response': speechlet_response
+        'response': speechlet
     }
     print('RESPONSE: {}'.format(response))
     return response
