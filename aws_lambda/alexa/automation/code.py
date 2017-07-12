@@ -7,13 +7,88 @@ For additional samples, visit the Alexa Skills Kit Getting Started guide at
 http://amzn.to/1LGWsLG
 """
 from __future__ import print_function
-import json
 
-# import requests
+import json
+import urllib2
 
 from common.context import get_context
-from common.alexa import build_response
-from common.automation import put, get
+
+
+def build_response(output, title='Automation', reprompt_text='', should_end_session=True, session_attributes=None):
+    speechlet = {
+        'outputSpeech': {
+            'type': 'PlainText',
+            'text': output
+        },
+        'card': {
+            'type': 'Simple',
+            'title': title,
+            'content': output
+        },
+        'reprompt': {
+            'outputSpeech': {
+                'type': 'PlainText',
+                'text': reprompt_text
+            }
+        },
+        'shouldEndSession': should_end_session
+    }
+    response = {
+        'version': '1.0',
+        'sessionAttributes': session_attributes or {},
+        'response': speechlet
+    }
+    print('RESPONSE: {}'.format(response))
+    return response
+
+
+def put(url, data):
+    opener = urllib2.build_opener(urllib2.HTTPHandler)
+    request = urllib2.Request(url, data=json.dumps(data))
+    request.add_header('Content-Type', 'application/json')
+    request.get_method = lambda: 'PUT'
+    try:
+        response = opener.open(request)
+    except urllib2.HTTPError as err:
+        if err.code in [400, 501]:
+            status_code = err.code
+            content = err.msg
+        else:
+            raise
+    else:
+        status_code = response.code
+        content = response.read()
+
+    response_data = {}
+    try:
+        response_data = json.loads(content)
+    except ValueError as err:
+        print('Error parsing response {}: {}'.format(content, err))
+    return status_code, response_data
+
+
+def get(url):
+    opener = urllib2.build_opener(urllib2.HTTPHandler)
+    request = urllib2.Request(url)
+    request.get_method = lambda: 'GET'
+    try:
+        response = opener.open(request)
+    except urllib2.HTTPError as err:
+        if err.code in [400, 501]:
+            status_code = err.code
+            content = err.msg
+        else:
+            raise
+    else:
+        status_code = response.code
+        content = response.read()
+
+    response_data = {}
+    try:
+        response_data = json.loads(content)
+    except ValueError as err:
+        print('Error parsing response {}: {}'.format(content, err))
+    return status_code, response_data
 
 
 def get_welcome_response():
