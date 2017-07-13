@@ -16,6 +16,7 @@
     version={{ git_branch }}
     accept_hostkey=yes
     key_file={{ git_key }}
+    force=yes
   when: git_use_key
   tags:
     - git
@@ -26,6 +27,7 @@
     dest={{ project_path }}
     version={{ git_branch }}
     accept_hostkey=yes
+    force=yes
   when: not git_use_key
   tags:
     - git
