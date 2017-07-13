@@ -33,5 +33,27 @@ SCENES = {
         {'device': 'tv', 'cmd': 'ok'},
         {'device': 'delay', 'cmd': '0.5'},
         {'device': 'apple', 'cmd': 'menu'}
+    ],
+    'happy end': [
+        {'device': 'tv', 'cmd': 'power'},
+        {'device': 'delay', 'cmd': '0.5'},
+        {'device': 'audio', 'cmd': 'power'},
+        {'device': 'delay', 'cmd': '0.5'},
+        {'device': 'apple', 'cmd': 'menu'},
+        {'device': 'delay', 'cmd': '0.5'},
+        {'device': 'light', 'cmd': 'off'},
+        {'device': 'delay', 'cmd': '0.5'},
+        {'device': 'apple', 'cmd': 'menu'}
+    ],
+    'evening': [
+        {'room': 'bedroom', 'device': 'light', 'cmd': 'w5'}
+    ],
+    'night': [
+        {'room': 'bedroom', 'device': 'light', 'cmd': 'sleep4'}
+    ],
+    'reset': [
+        {'device': 'router', 'cmd': 'off'},
+        {'device': 'delay', 'cmd': '0.5'},
+        {'device': 'router', 'cmd': 'on'}
     ]
 }
