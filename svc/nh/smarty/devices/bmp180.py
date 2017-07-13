@@ -16,11 +16,11 @@ class BMP180(object):
         if mock:
             return 'NA'
         temp, _ = readBmp180()
-        return round(temp, 1)
+        return '{} C'.format(round(temp, 1))
 
     @staticmethod
     def pressure():
         if mock:
             return 'NA'
         _, pres = readBmp180()
-        return round(pres, 0)
+        return '{} mmHg'.format(round(pres, 0))

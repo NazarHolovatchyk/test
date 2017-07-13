@@ -221,7 +221,7 @@ def sensor_intent(intent, session):
     uri = url + '/v1/sensor'
 
     slots = intent.get('slots', {})
-    room = slots['room'].get('value', 'house')
+    room = slots.get('room', {}).get('value', 'house')
     sensor = slots['sensor'].get('value')
     params = {
         'room': room,
@@ -230,15 +230,15 @@ def sensor_intent(intent, session):
     print('Request GET: {} params={}'.format(uri, params))
 
     status_code, response_data = get(uri, params=params)
-    print('Actuator response: {} - {}'.format(status_code, response_data))
+    print('Service response: {} - {}'.format(status_code, response_data))
 
     if status_code == 200:
-        speech_output = 'done'
+        speech_output = response_data['result']
     elif status_code in [400, 501]:
         speech_output = response_data.get('error', 'error')
     else:
         speech_output = 'error'
-    return build_response(speech_output, title=intent['name'])
+    return build_response(speech_output, title='{} {}'.format(room, sensor))
 
 
 def scene_intent(intent, session):
@@ -259,12 +259,12 @@ def scene_intent(intent, session):
     print('Scene response: {} - {}'.format(status_code, response_data))
 
     if status_code == 200:
-        speech_output = 'done'
+        speech_output = '{} scene activated'.format(scene)
     elif status_code in [400, 501]:
         speech_output = response_data.get('error', 'error')
     else:
         speech_output = 'error'
-    return build_response(speech_output, title=intent['name'])
+    return build_response(speech_output, title='Scene')
 
 
 def version_intent(intent, session):
@@ -320,6 +320,8 @@ def on_intent(intent_request, session):
         return actuator_intent(intent, session)
     if intent_name == "SceneIntent":
         return scene_intent(intent, session)
+    if intent_name == "SensorIntent":
+        return sensor_intent(intent, session)
     if intent_name == "VersionIntent":
         return version_intent(intent, session)
     elif intent_name == "AMAZON.HelpIntent":

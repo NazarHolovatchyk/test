@@ -1,8 +1,8 @@
 import logging
 
 from nh.smarty.endpoints.base import BaseResource
-from svc.nh.smarty.utils.cmd import exec_command
-from svc.nh.smarty.utils.general import is_mac_os
+from nh.smarty.utils.cmd import exec_command
+from nh.smarty.utils.general import is_mac_os
 
 logger = logging.getLogger(__name__)
 

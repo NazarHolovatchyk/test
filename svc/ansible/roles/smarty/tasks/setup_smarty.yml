@@ -9,7 +9,9 @@
     - push_updates
 
 - name: Delete logs
-  command: rm -rf {{ log_path }}
+  file:
+    path: "{{ log_path }}/"
+    state: absent
   args:
     removes: "{{ log_path }}"
   tags: smarty
