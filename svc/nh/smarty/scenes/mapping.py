@@ -2,6 +2,9 @@
 # {'room': '', 'device': '', 'cmd': ''}
 
 SCENES = {
+    'test': [
+        {'device': 'light', 'cmd': 'off'}
+    ],
     'movie': [
         {'device': 'tv', 'cmd': 'power'},
         {'device': 'delay', 'cmd': '0.5'},
