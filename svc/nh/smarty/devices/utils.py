@@ -9,4 +9,4 @@ class Delay(object):
         """
         :param cmd: Delay in seconds
         """
-        time.sleep(cmd)
+        time.sleep(float(cmd))
