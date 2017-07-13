@@ -1,14 +1,14 @@
 ---
 
 - name: Delete the virtual env
-  command: sudo rm -rf {{ virtualenv_path }}
+  command: rm -rf {{ virtualenv_path }}
   args:
     removes: "{{ virtualenv_path }}"
   when: rebuild_virtualenv
   tags: smarty
 
 - name: Create the virtualenv
-  command: virtualenv {{ virtualenv_path }}
+  command: virtualenv --system-site-packages {{ virtualenv_path }}
            creates={{ virtualenv_path }}/bin/activate
   tags: smarty
 

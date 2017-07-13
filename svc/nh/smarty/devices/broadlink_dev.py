@@ -1,13 +1,9 @@
 import logging
 
 from nh.smarty.app import setup_app
-from nh.smarty.broadlink_client import client
+from nh.smarty.providers import broadlink_provider
 
 app = setup_app()
-
-
-class BroadlinkBase(object):
-    pass
 
 
 class RmBase(object):
@@ -15,17 +11,18 @@ class RmBase(object):
     ip = None
     mac = None
 
-    def __init__(self):
-        self.device = client.BroadlinkRMSwitch(self.ip, self.mac)
+    def __init__(self, device_name):
+        self.hardware = broadlink_provider.BroadlinkRMSwitch(self.ip, self.mac)
+        self.device_name = device_name
 
-    def send(self, device_name, command):
+    def send(self, command):
         try:
-            code = self.get_code_from_file(device_name, command)
+            code = self.get_code_from_file(self.device_name, command)
         except IOError as err:
-            msg = 'Error getting IR code for the command'
-            logging.error(msg + str(err))
-            raise IOError(msg)
-        return self.device.send(code)
+            msg = 'Command {} for {} device not found'.format(command, self.device_name)
+            logging.error(msg + '\n' + str(err))
+            raise ValueError(msg)
+        return self.hardware.send(code)
 
     @staticmethod
     def get_code_from_file(device, command):
@@ -55,7 +52,7 @@ class Sp2Base(object):
     mac = None
 
     def __init__(self):
-        self.device = client.BroadlinkSP2Switch(self.ip, self.mac)
+        self.device = broadlink_provider.BroadlinkSP2Switch(self.ip, self.mac)
 
     def send(self, cmd):
         return self.device.send(cmd)

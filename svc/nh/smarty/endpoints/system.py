@@ -1,13 +1,14 @@
 import logging
-import platform
 
 from nh.smarty.endpoints.base import BaseResource
 from svc.nh.smarty.utils.cmd import exec_command
+from svc.nh.smarty.utils.general import is_mac_os
 
 logger = logging.getLogger(__name__)
 
 
 class SystemEndpoint(BaseResource):
+    # TODO move to sensors
 
     def get(self, device):
 
@@ -16,7 +17,7 @@ class SystemEndpoint(BaseResource):
         if device not in ['disk']:
             return self.error_response("Unknown system device: {}".format(device), status=400)
 
-        if platform.system() == 'Darwin':
+        if is_mac_os():
             cmd = "df -h | grep disk1 | awk '{print $5}'"
         else:
             cmd = "df -h | grep root | awk '{print $5}'"

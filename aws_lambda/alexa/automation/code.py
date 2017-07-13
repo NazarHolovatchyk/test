@@ -9,6 +9,7 @@ http://amzn.to/1LGWsLG
 from __future__ import print_function
 
 import json
+import urllib
 import urllib2
 
 from common.context import get_context
@@ -67,7 +68,10 @@ def put(url, data):
     return status_code, response_data
 
 
-def get(url):
+def get(url, params=None):
+    if params:
+        param_str = urllib.urlencode(params)
+        url += '?' + param_str
     opener = urllib2.build_opener(urllib2.HTTPHandler)
     request = urllib2.Request(url)
     request.get_method = lambda: 'GET'
@@ -132,7 +136,6 @@ def set_color_in_session(intent, session):
 
 
 def get_color_from_session(intent, session):
-    reprompt_text = None
     if session.get('attributes', {}) and "favoriteColor" in session.get('attributes', {}):
         favorite_color = session['attributes']['favoriteColor']
         speech_output = "Your favorite color is " + favorite_color + ". Goodbye."
@@ -145,15 +148,15 @@ def get_color_from_session(intent, session):
     # Setting reprompt_text to None signifies that we do not want to reprompt
     # the user. If the user does not respond or says something that is not
     # understood, the session will end.
-    return build_response(speech_output, intent['name'], reprompt_text, should_end_session)
+    return build_response(speech_output, title=intent['name'], should_end_session=should_end_session)
 
 
-def automation_intent(intent, session):
+def actuator_intent(intent, session):
     print("intent: {}, session: {}".format(intent, session))
     # "OnOffIntent", "DimmLightIntent", "AutomationIntent"
     context = get_context()
     url = context.get('AutomationServiceUrl')
-    uri = url + '/v1/automation'
+    uri = url + '/v1/actuator'
 
     slots = intent.get('slots', {})
     room = slots['room'].get('value', 'house')
@@ -184,7 +187,7 @@ def automation_intent(intent, session):
             'sleep 4': 'sleep4'
         }
         if state not in map:
-            return build_response('Unexpected state {}'.format(state), intent['name'])
+            return build_response('Unexpected state {}'.format(state), title=intent['name'])
         status = map[state]
     elif intent['name'] == "OnOffIntent":
         device = slots['device']['value'].replace('the ', '')
@@ -195,12 +198,12 @@ def automation_intent(intent, session):
     data = {
         'room': room,
         'device': device,
-        'status': status
+        'cmd': status
     }
     print('Request PUT: {} data={}'.format(uri, data))
 
     status_code, response_data = put(uri, data=data)
-    print('Automation service response: {} - {}'.format(status_code, response_data))
+    print('Actuator response: {} - {}'.format(status_code, response_data))
 
     if status_code == 200:
         speech_output = 'done'
@@ -208,7 +211,34 @@ def automation_intent(intent, session):
         speech_output = response_data.get('error', 'error')
     else:
         speech_output = 'error'
-    return build_response(speech_output, intent['name'])
+    return build_response(speech_output, title=intent['name'])
+
+
+def sensor_intent(intent, session):
+    print("Sensor intent: {}, session: {}".format(intent, session))
+    context = get_context()
+    url = context.get('AutomationServiceUrl')
+    uri = url + '/v1/sensor'
+
+    slots = intent.get('slots', {})
+    room = slots['room'].get('value', 'house')
+    sensor = slots['sensor'].get('value')
+    params = {
+        'room': room,
+        'sensor': sensor
+    }
+    print('Request GET: {} params={}'.format(uri, params))
+
+    status_code, response_data = get(uri, params=params)
+    print('Actuator response: {} - {}'.format(status_code, response_data))
+
+    if status_code == 200:
+        speech_output = 'done'
+    elif status_code in [400, 501]:
+        speech_output = response_data.get('error', 'error')
+    else:
+        speech_output = 'error'
+    return build_response(speech_output, title=intent['name'])
 
 
 def scene_intent(intent, session):
@@ -225,16 +255,16 @@ def scene_intent(intent, session):
     }
     print('Request PUT: {} data={}'.format(uri, data))
 
-    status_code, content = put(uri, data=data)
-    print('Automation service response: {} - {}'.format(status_code, content))
+    status_code, response_data = put(uri, data=data)
+    print('Scene response: {} - {}'.format(status_code, response_data))
 
     if status_code == 200:
         speech_output = 'done'
-    elif status_code == 501:
-        speech_output = 'done'
+    elif status_code in [400, 501]:
+        speech_output = response_data.get('error', 'error')
     else:
         speech_output = 'error'
-    return build_response(speech_output, intent['name'])
+    return build_response(speech_output, title=intent['name'])
 
 
 def version_intent(intent, session):
@@ -257,7 +287,7 @@ def version_intent(intent, session):
         data = json.loads(content)
         version = data['version']
         speech_output = 'Automation service version is {}'.format(version)
-    return build_response(speech_output, intent['name'])
+    return build_response(speech_output, title=intent['name'])
 
 
 # --------------- Events ------------------
@@ -287,13 +317,11 @@ def on_intent(intent_request, session):
 
     # Dispatch to your skill's intent handlers
     if intent_name in ["OnOffIntent", "DimmLightIntent", "AutomationIntent"]:
-        return automation_intent(intent, session)
+        return actuator_intent(intent, session)
     if intent_name == "SceneIntent":
         return scene_intent(intent, session)
     if intent_name == "VersionIntent":
         return version_intent(intent, session)
-    elif intent_name == "WhatsMyColorIntent":
-        return get_color_from_session(intent, session)
     elif intent_name == "AMAZON.HelpIntent":
         return get_welcome_response()
     elif intent_name == "AMAZON.CancelIntent" or intent_name == "AMAZON.StopIntent":

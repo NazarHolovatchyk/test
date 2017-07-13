@@ -2,7 +2,7 @@ import logging
 
 from nh.smarty.app import setup_app
 from nh.smarty.broadlink_client.client import execute
-from nh.smarty.devices.provider import RmBase
+from nh.smarty.devices.broadlink_dev import RmBase
 
 logger = logging.getLogger(__name__)
 

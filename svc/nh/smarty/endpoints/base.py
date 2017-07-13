@@ -45,6 +45,7 @@ class BaseResource(Resource):
         if headers:
             for key, val in headers.iteritems():
                 response.headers.set(key, val)
+        logger.info('Success response: {} {}'.format(status, body))
         return response
 
     @staticmethod
@@ -52,12 +53,13 @@ class BaseResource(Resource):
                        content_type='application/json', details=None):
         body = ''
         if message is not None:
-            content = {'error': message}
+            content = {'error': str(message)}
             if details:
-                content['details'] = details
+                content['details'] = str(details)
             body = json.dumps(content)
         response = Response(body, status=status, content_type=content_type)
         if headers:
             for key, val in headers.iteritems():
                 response.headers.set(key, val)
+        logger.info('Error response: {} {}'.format(status, body))
         return response

@@ -9,7 +9,7 @@ logger = logging.getLogger(__name__)
 class AutomationEndpoint(BaseResource):
 
     def put(self):
-        room = self.json_param('room', required=False, default='global')
+        room = self.json_param('room', required=False, default='house')
         device = self.json_param('device', required=True)
         status = self.json_param('status', required=True)
 

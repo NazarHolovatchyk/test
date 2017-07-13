@@ -12,12 +12,12 @@
 - name: Install base packages
   apt: name={{ item }} update_cache={{ update_apt_cache }} force=yes state=installed
   with_items:
-    # - software-properties-common
-    # - python-software-properties
     - build-essential
-    - module-assistant
+    - python-dev
+    - python-smbus
     - git
     - vim
+    - i2c-tools
   tags: packages
 
 - name: Auto-remove old apt packages
