@@ -12,8 +12,6 @@
   file:
     path: "{{ log_path }}/"
     state: absent
-  args:
-    removes: "{{ log_path }}"
   tags: smarty
 
 - name: Create the application log folder

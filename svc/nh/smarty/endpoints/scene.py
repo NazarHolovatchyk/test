@@ -41,4 +41,4 @@ class SceneEndpoint(BaseResource):
                     details="Actuator command failed" + str(err),
                     status=501
                 )
-        return self.success_response("{} scene activated".format(scene_name))
+        return self.success_response({"result": "{} scene activated".format(scene_name)})
