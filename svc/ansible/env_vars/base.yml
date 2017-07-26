@@ -1,6 +1,7 @@
 ---
 
 application_name: smarty
+application_domain: smrty.net
 base_path: "/home/pi"
 project_path: "{{ base_path }}/smarty"
 log_path: "{{ project_path }}/logs"

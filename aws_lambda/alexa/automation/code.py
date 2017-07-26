@@ -274,8 +274,8 @@ def version_intent(intent, session):
     uri = url + '/v1/status'
     print('Request GET: {}'.format(uri))
 
-    status_code, content = get(uri)
-    print('Automation service response: {} - {}'.format(status_code, content))
+    status_code, response_data = get(uri)
+    print('Automation service response: {} - {}'.format(status_code, response_data))
 
     # response = requests.get(uri)
     # print('Automation service response: {} - {}'.format(response.status_code, response.content))
@@ -283,9 +283,7 @@ def version_intent(intent, session):
     if status_code != 200:
         speech_output = 'Error calling Automation service'
     else:
-        # data = response.json()
-        data = json.loads(content)
-        version = data['version']
+        version = response_data['version']
         speech_output = 'Automation service version is {}'.format(version)
     return build_response(speech_output, title=intent['name'])
 

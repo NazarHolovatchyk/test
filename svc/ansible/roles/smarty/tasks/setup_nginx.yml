@@ -1,13 +1,13 @@
----
+  ---
 - name: Install Nginx
   apt: name=nginx state=latest update_cache={{ update_apt_cache }}
   tags:
     - smarty
     - nginx
 
-- name: Compile Nginx configuration
-  template: src=nginx.conf.j2
-            dest=/etc/nginx/sites-available/smarty.conf
+- name: Compile Nginx SSL configuration
+  template: src=nginx.ssl.conf.j2
+            dest=/etc/nginx/snippets/ssl-{{ application_domain }}.conf
             owner={{ app_user }}
             group={{ app_group }}
             mode=0644
@@ -16,9 +16,29 @@
     - smarty
     - nginx
 
-- name: Create symlink to Vendor Machine webapp
-  file: src=/etc/nginx/sites-available/smarty.conf
-        dest=/etc/nginx/sites-enabled/smarty.conf
+- name: Copy Nginx SSL params file
+  copy: src=ssl-params.conf
+        dest=/etc/nginx/snippets/ssl-params.conf
+        mode=0644
+  notify: nginx restart
+  tags:
+    - smarty
+    - nginx
+
+- name: Compile Nginx configuration
+  template: src=nginx.conf.j2
+            dest=/etc/nginx/sites-available/{{ application_domain }}.conf
+            owner={{ app_user }}
+            group={{ app_group }}
+            mode=0644
+  notify: nginx restart
+  tags:
+    - smarty
+    - nginx
+
+- name: Create symlink to Smarty service
+  file: src=/etc/nginx/sites-available/{{ application_domain }}.conf
+        dest=/etc/nginx/sites-enabled/{{ application_domain }}.conf
         state=link
   notify: nginx reload
   tags:
