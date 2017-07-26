@@ -11,4 +11,5 @@ py2
 .DS_Store
 build/
 dist/
+logs/
 *.pem
