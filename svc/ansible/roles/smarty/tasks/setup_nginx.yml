@@ -1,4 +1,4 @@
-  ---
+---
 - name: Install Nginx
   apt: name=nginx state=latest update_cache={{ update_apt_cache }}
   tags:
@@ -8,8 +8,6 @@
 - name: Compile Nginx SSL configuration
   template: src=nginx.ssl.conf.j2
             dest=/etc/nginx/snippets/ssl-{{ application_domain }}.conf
-            owner={{ app_user }}
-            group={{ app_group }}
             mode=0644
   notify: nginx restart
   tags:
@@ -28,8 +26,6 @@
 - name: Compile Nginx configuration
   template: src=nginx.conf.j2
             dest=/etc/nginx/sites-available/{{ application_domain }}.conf
-            owner={{ app_user }}
-            group={{ app_group }}
             mode=0644
   notify: nginx restart
   tags:

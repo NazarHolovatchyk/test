@@ -20,19 +20,19 @@ upstream flask {
 server {
     listen      80 default_server;
     listen [::]:80 default_server;
-	listen      443 ssl http2 default_server;
-	listen [::]:443 ssl http2 default_server;
+    listen      443 ssl default_server;
+    listen [::]:443 ssl default_server;
 
     server_name {{ application_domain }} www.{{ application_domain }};
-	include snippets/ssl-{{ application_domain }}.conf;
-	include snippets/ssl-params.conf;
+    include snippets/ssl-{{ application_domain }}.conf;
+    include snippets/ssl-params.conf;
 
     charset     utf-8;
 
     # max upload size
     client_max_body_size 1M;
 
-	# certbot verification location
+    # certbot verification location
     location '/.well-known/acme-challenge' {
         root        /var/www/{{ application_domain }};
     }
@@ -51,8 +51,8 @@ server {
         # uwsgi_pass  flask;
         # include     /home/pi/smarty/svc/ops/uwsgi_params;
         proxy_pass       http://flask;
-		proxy_set_header Host      $host;
-		proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header Host      $host;
+        proxy_set_header X-Real-IP $remote_addr;
         proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
         proxy_set_header X-Forwarded-Proto $scheme;
     }

@@ -14,5 +14,3 @@
   tags:
     - smarty
     - supervisor
-# owner={{ app_user }}
-# group={{ app_group }}

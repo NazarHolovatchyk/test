@@ -6,4 +6,4 @@
 - include: setup_virtualenv.yml
 - include: setup_smarty.yml
 - include: setup_supervisor.yml
-# - include: setup_nginx.yml
+- include: setup_nginx.yml
