@@ -13,6 +13,6 @@ def get_context(event=None):
         with open(context_filename, 'r') as f:
             context = json.loads(f.read())
 
-    # context.update(os.environ)
+    context.update(os.environ)
     context.update(event)
     return context

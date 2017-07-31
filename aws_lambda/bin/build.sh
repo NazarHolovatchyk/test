@@ -56,6 +56,7 @@ do
     cp ${LAMBDA_BASE_DIR}/context/${STAGE}.json ${JOB_PATH}/.context
     cp -R ${LAMBDA_BASE_DIR}/common ${JOB_PATH}
     find . -name "*.pyc" -delete
+    find . -name ".DS_Store" -delete
     popd
     color green "Archiving package"
     zip -r -q ${DIST_DIR}/${JOB}.zip .

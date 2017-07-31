@@ -191,7 +191,7 @@ def actuator_intent(intent, session):
         status = map[state]
     elif intent['name'] == "OnOffIntent":
         device = slots['device']['value'].replace('the ', '')
-        status = '1' if slots['on_off_state'].get('value') == 'on' else '0'
+        status = 'on' if slots['on_off_state'].get('value') == 'on' else 'off'
     else:
         device = slots['device']['value']
         status = slots['status'].get('value')
@@ -341,7 +341,7 @@ def on_session_ended(session_ended_request, session):
 
 
 # --------------- Main handler ------------------
-def lambda_handler(event, context):
+def handler(event, context):
     """ Route the incoming request based on type (LaunchRequest, IntentRequest,
     etc.) The JSON body of the request is provided in the event parameter.
     """
@@ -370,6 +370,7 @@ def lambda_handler(event, context):
 
 
 if __name__ == '__main__':
+    # "AutomationServiceUrl": "https://smrty.net"
     event = {
         "session": {
             "new": False,
@@ -382,16 +383,20 @@ if __name__ == '__main__':
             "type": "IntentRequest",
             "intent": {
                 # "name": "VersionIntent"
-                "name": "DimmLightIntent",
-                'slots': {
-                    'room': {
-                        'value': 'bedroom'
+                # "name": "DimmLightIntent",
+                "name": "OnOffIntent",
+                "slots": {
+                    "room": {
+                        "value": "house"
                     },
-                    'intelite_state': {
-                        'value': 'sleep one'
+                    "device": {
+                        "value": "light"
+                    },
+                    "on_off_state": {
+                        "value": "on"
                     }
                 }
             }
         }
     }
-    lambda_handler(event, None)
+    handler(event, None)
