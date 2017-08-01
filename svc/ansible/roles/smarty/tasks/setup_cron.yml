@@ -1,0 +1,13 @@
+
+- cron:
+    name: "doorbell on"
+    minute: "15"
+    hour: "8"
+    job: "{{ virtualenv_path }}/bin/python {{ project_path }}/svc/cli.py -d door -c on"
+
+
+- cron:
+    name: "doorbell off"
+    minute: "15"
+    hour: "21"
+    job: "{{ virtualenv_path }}/bin/python {{ project_path }}/svc/cli.py -d door -c off"
