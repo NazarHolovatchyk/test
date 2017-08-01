@@ -57,6 +57,8 @@ do
     cp -R ${LAMBDA_BASE_DIR}/common ${JOB_PATH}
     find . -name "*.pyc" -delete
     find . -name ".DS_Store" -delete
+    echo "[install]" > ${JOB_PATH}/setup.cfg
+    echo "prefix=" >> ${JOB_PATH}/setup.cfg
     popd
     color green "Archiving package"
     zip -r -q ${DIST_DIR}/${JOB}.zip .

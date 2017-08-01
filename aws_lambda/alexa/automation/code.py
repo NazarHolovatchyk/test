@@ -9,10 +9,27 @@ http://amzn.to/1LGWsLG
 from __future__ import print_function
 
 import json
+import os
 import urllib
 import urllib2
 
-from common.context import get_context
+# from common.context import get_context
+
+
+def get_context(event=None):
+    context_filename = os.environ.get('LAMBDA_CONTEXT', '.context')
+
+    if event is None:
+        event = {}
+
+    context = {}
+    if os.path.isfile(context_filename):
+        with open(context_filename, 'r') as f:
+            context = json.loads(f.read())
+
+    context.update(os.environ)
+    context.update(event)
+    return context
 
 
 def build_response(output, title='Automation', reprompt_text='', should_end_session=True, session_attributes=None):
@@ -341,7 +358,7 @@ def on_session_ended(session_ended_request, session):
 
 
 # --------------- Main handler ------------------
-def handler(event, context):
+def lambda_handler(event, context):
     """ Route the incoming request based on type (LaunchRequest, IntentRequest,
     etc.) The JSON body of the request is provided in the event parameter.
     """
@@ -399,4 +416,4 @@ if __name__ == '__main__':
             }
         }
     }
-    handler(event, None)
+    lambda_handler(event, None)

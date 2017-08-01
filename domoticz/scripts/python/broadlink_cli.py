@@ -7,13 +7,12 @@ import logging
 import os
 import socket
 import time
-import sys
 from base64 import b64encode, b64decode
 from datetime import datetime, timedelta
 
 import broadlink
 
-
+logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
 DEFAULT_TIMEOUT = 10
@@ -36,30 +35,6 @@ class BroadlinkBase(object):
     def __init__(self, device=None):
         self._device = device
 
-    def learn_command(self):
-        try:
-            auth = self._device.auth()
-        except socket.timeout:
-            logger.error("Failed to connect to device, timeout.")
-            return False
-        if not auth:
-            logger.error("Failed to connect to device.")
-            return False
-
-        self._device.enter_learning()
-
-        logger.info("Press the key you want to learn")
-        start_time = datetime.utcnow()
-        while (datetime.utcnow() - start_time) < timedelta(seconds=10):
-            packet = self._device.check_data()
-            if packet:
-                log_msg = 'Received packet is: {}'.format(b64encode(packet).decode('utf8'))
-                logger.info(log_msg)
-                return True
-            time.sleep(0.1)
-        logger.error('Did not received any signal')
-        return False
-
     @staticmethod
     def _get_payload(packet):
         payload = b64decode(packet)
@@ -79,23 +54,107 @@ class BroadlinkBase(object):
         try:
             auth_result = self._device.auth()
         except socket.timeout:
+            logger.error("Failed to connect to device, timeout.")
             auth_result = False
         if not auth_result and retry > 0:
+            logger.error("Retrying...")
             return self.auth(max(0, retry-1))
         return auth_result
 
 
-class BroadlinkRMSwitch(BroadlinkBase):
+class BroadlinkRM(BroadlinkBase):
     """Representation of an Broadlink RM device"""
+
+    CMD_LEARN_IR = 4
+    CMD_RF_SWEEP_START = 0x19
+    CMD_RF_SWEEP_CANCEL = 0x1e
+    CMD_RF_DATA = 0x1a
+    CMD_RF_DATA2 = 0x1b
 
     def __init__(self, ip_addr, mac_addr):
         """Initialize the switch."""
         device = broadlink.rm((ip_addr, 80), mac_addr)
-        super(BroadlinkRMSwitch, self).__init__(device)
+        super(BroadlinkRM, self).__init__(device)
 
     def send(self, packet):
         """Send packet to device."""
         self._device.send_data(packet)
+
+    def learn_ir(self):
+        if not self.auth():
+            return
+
+        self._device.enter_learning()
+
+        logger.info("Press the key you want to learn")
+        start_time = datetime.utcnow()
+        while (datetime.utcnow() - start_time) < timedelta(seconds=10):
+            packet = self._device.check_data()
+            if packet:
+                log_msg = 'Received packet is: {}'.format(b64encode(packet).decode('utf8'))
+                logger.info(log_msg)
+                return True
+            time.sleep(0.1)
+        logger.error('Did not received any signal')
+        return False
+
+    def learn_rf(self):
+        if not self.auth():
+            return
+
+        logger.info("Press the key you want to learn")
+        self.start_rf_sweep()
+        time.sleep(1)
+
+        # Check RF data 1
+        start_time = datetime.utcnow()
+        while (datetime.utcnow() - start_time) < timedelta(seconds=10):
+            packet = self.check_rf_data()
+            if packet:
+                log_msg = 'Phase 1: Received packet is: {}'.format(b64encode(packet).decode('utf8'))
+                logger.info(log_msg)
+                break
+            time.sleep(0.1)
+
+        # Check RF data 2
+        while (datetime.utcnow() - start_time) < timedelta(seconds=10):
+            packet = self.check_rf_data2()
+            if packet:
+                log_msg = 'Phase 2: Received packet is: {}'.format(b64encode(packet).decode('utf8'))
+                logger.info(log_msg)
+                break
+            time.sleep(0.1)
+
+        self.cancel_rf_sweep()
+
+    def start_rf_sweep(self):
+        packet = self._cmd(self.CMD_RF_SWEEP_START)
+        return packet
+
+    def check_rf_data(self):
+        packet = self._cmd(self.CMD_RF_DATA)
+        return packet
+
+    def check_rf_data2(self):
+        packet = self._cmd(self.CMD_RF_DATA2)
+        return packet
+
+    def cancel_rf_sweep(self):
+        packet = self._cmd(self.CMD_RF_SWEEP_CANCEL)
+        return packet
+
+    def _cmd(self, cmd_code):
+        packet = bytearray(16)
+        packet[0] = cmd_code
+        response = self._device.send_packet(0x6a, packet)
+        err = response[0x22] | (response[0x23] << 8)
+        if err != 0:
+            return
+        payload = self._device.decrypt(bytes(response[0x38:]))
+        packet = payload[0x04:]
+        log_msg = 'Received packet: {}'.format(b64encode(packet).decode('utf8'))
+        logger.info(log_msg)
+        return packet
 
 
 class BroadlinkSP1Switch(BroadlinkBase):
@@ -209,10 +268,16 @@ if __name__ == '__main__':
             command = f.read()
 
     if device in RM_TYPES:
-        # broadlink_device = BroadlinkRMSwitch((ip_addr, 80), mac_addr)
-        device = broadlink.rm((ip_addr, 80), mac_addr)
-        device.auth()
-        device.send_data(b64decode(command))
+        if command in ['learn', 'learn_ir']:
+            device = BroadlinkRM(ip_addr, mac_addr)
+            device.learn_ir()
+        elif command == 'learn_rf':
+            device = BroadlinkRM(ip_addr, mac_addr)
+            device.learn_rf()
+        else:
+            device = broadlink.rm((ip_addr, 80), mac_addr)
+            device.auth()
+            device.send_data(b64decode(command))
     elif device in SP2_TYPES:
         device = broadlink.sp2((ip_addr, 80), mac_addr)
         device.auth()
@@ -220,13 +285,3 @@ if __name__ == '__main__':
         device.set_power(status)
     else:
         raise ValueError('Unknown device. Available: rm, sp2 and {}'.format(DEVICES.keys()))
-
-    # try:
-    #     auth = broadlink_device.auth()
-    # except socket.timeout as err:
-    #     raise IOError("Failed to connect to device: {}".format(err))
-    # if not auth:
-    #     raise IOError("Failed to authenticate to device")
-
-    # if parsed.command == 'send':
-
