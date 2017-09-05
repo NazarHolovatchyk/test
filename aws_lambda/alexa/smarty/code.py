@@ -8,108 +8,10 @@ http://amzn.to/1LGWsLG
 """
 from __future__ import print_function
 
-import json
-import os
-import urllib
-import urllib2
-
-# from common.context import get_context
-
-
-def get_context(event=None):
-    context_filename = os.environ.get('LAMBDA_CONTEXT', '.context')
-
-    if event is None:
-        event = {}
-
-    context = {}
-    if os.path.isfile(context_filename):
-        with open(context_filename, 'r') as f:
-            context = json.loads(f.read())
-
-    context.update(os.environ)
-    context.update(event)
-    return context
-
-
-def build_response(output, title='Automation', reprompt_text='', should_end_session=True, session_attributes=None):
-    speechlet = {
-        'outputSpeech': {
-            'type': 'PlainText',
-            'text': output
-        },
-        'card': {
-            'type': 'Simple',
-            'title': title,
-            'content': output
-        },
-        'reprompt': {
-            'outputSpeech': {
-                'type': 'PlainText',
-                'text': reprompt_text
-            }
-        },
-        'shouldEndSession': should_end_session
-    }
-    response = {
-        'version': '1.0',
-        'sessionAttributes': session_attributes or {},
-        'response': speechlet
-    }
-    print('RESPONSE: {}'.format(response))
-    return response
-
-
-def put(url, data):
-    opener = urllib2.build_opener(urllib2.HTTPHandler)
-    request = urllib2.Request(url, data=json.dumps(data))
-    request.add_header('Content-Type', 'application/json')
-    request.get_method = lambda: 'PUT'
-    try:
-        response = opener.open(request)
-    except urllib2.HTTPError as err:
-        if err.code in [400, 501]:
-            status_code = err.code
-            content = err.msg
-        else:
-            raise
-    else:
-        status_code = response.code
-        content = response.read()
-
-    response_data = {}
-    try:
-        response_data = json.loads(content)
-    except ValueError as err:
-        print('Error parsing response {}: {}'.format(content, err))
-    return status_code, response_data
-
-
-def get(url, params=None):
-    if params:
-        param_str = urllib.urlencode(params)
-        url += '?' + param_str
-    opener = urllib2.build_opener(urllib2.HTTPHandler)
-    request = urllib2.Request(url)
-    request.get_method = lambda: 'GET'
-    try:
-        response = opener.open(request)
-    except urllib2.HTTPError as err:
-        if err.code in [400, 501]:
-            status_code = err.code
-            content = err.msg
-        else:
-            raise
-    else:
-        status_code = response.code
-        content = response.read()
-
-    response_data = {}
-    try:
-        response_data = json.loads(content)
-    except ValueError as err:
-        print('Error parsing response {}: {}'.format(content, err))
-    return status_code, response_data
+from common.alexa import build_response
+from common.context import get_context
+from common.http import get, put
+from common.intelite import INTELITE_MAP
 
 
 def get_welcome_response():
@@ -125,49 +27,6 @@ def handle_session_end_request():
     return build_response(speech_output, card_title)
 
 
-def create_favorite_color_attributes(favorite_color):
-    return {"favoriteColor": favorite_color}
-
-
-def set_color_in_session(intent, session):
-    """ Sets the color in the session and prepares the speech to reply to the user."""
-    card_title = intent['name']
-    session_attributes = {}
-    if 'Color' in intent['slots']:
-        favorite_color = intent['slots']['Color']['value']
-        session_attributes = create_favorite_color_attributes(favorite_color)
-        speech_output = "I now know your favorite color is " + \
-                        favorite_color + \
-                        ". You can ask me your favorite color by saying, " \
-                        "what's my favorite color?"
-        reprompt_text = "You can ask me your favorite color by saying, " \
-                        "what's my favorite color?"
-    else:
-        speech_output = "I'm not sure what your favorite color is. " \
-                        "Please try again."
-        reprompt_text = "I'm not sure what your favorite color is. " \
-                        "You can tell me your favorite color by saying, " \
-                        "my favorite color is red."
-    return build_response(speech_output, card_title, reprompt_text, should_end_session=False,
-                          session_attributes=session_attributes)
-
-
-def get_color_from_session(intent, session):
-    if session.get('attributes', {}) and "favoriteColor" in session.get('attributes', {}):
-        favorite_color = session['attributes']['favoriteColor']
-        speech_output = "Your favorite color is " + favorite_color + ". Goodbye."
-        should_end_session = True
-    else:
-        speech_output = "I'm not sure what your favorite color is. " \
-                        "You can say, my favorite color is red."
-        should_end_session = False
-
-    # Setting reprompt_text to None signifies that we do not want to reprompt
-    # the user. If the user does not respond or says something that is not
-    # understood, the session will end.
-    return build_response(speech_output, title=intent['name'], should_end_session=should_end_session)
-
-
 def actuator_intent(intent, session):
     print("intent: {}, session: {}".format(intent, session))
     # "OnOffIntent", "DimmLightIntent", "AutomationIntent"
@@ -180,32 +39,9 @@ def actuator_intent(intent, session):
     if intent['name'] == "DimmLightIntent":
         device = 'light'
         state = slots['intelite_state'].get('value')
-        map = {
-            'on': 'on',
-            'off': 'off',
-            'maximum': 'max',
-            'level one': 'w1',
-            'level two': 'w2',
-            'level five': 'w5',
-            'level eight': 'w8',
-            'level ten': 'w10',
-            'sleep one': 'sleep1',
-            'sleep two': 'sleep2',
-            'sleep three': 'sleep3',
-            'sleep four': 'sleep4',
-            'level 1': 'w1',
-            'level 2': 'w2',
-            'level 5': 'w5',
-            'level 8': 'w8',
-            'level 10': 'w10',
-            'sleep 1': 'sleep1',
-            'sleep 2': 'sleep2',
-            'sleep 3': 'sleep3',
-            'sleep 4': 'sleep4'
-        }
-        if state not in map:
+        if state not in INTELITE_MAP:
             return build_response('Unexpected state {}'.format(state), title=intent['name'])
-        status = map[state]
+        status = INTELITE_MAP[state]
     elif intent['name'] == "OnOffIntent":
         device = slots['device']['value'].replace('the ', '')
         status = 'on' if slots['on_off_state'].get('value') == 'on' else 'off'

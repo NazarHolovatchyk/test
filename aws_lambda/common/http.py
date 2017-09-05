@@ -27,7 +27,10 @@ def put(url, data):
     return status_code, response_data
 
 
-def get(url):
+def get(url, params=None):
+    if params:
+        param_str = urllib.urlencode(params)
+        url += '?' + param_str
     opener = urllib2.build_opener(urllib2.HTTPHandler)
     request = urllib2.Request(url)
     request.get_method = lambda: 'GET'
