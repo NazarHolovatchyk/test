@@ -23,6 +23,16 @@
     - smarty
     - nginx
 
+# optional
+- name: Copy Nginx dhparam file
+  copy: src=dhparam.pem
+        dest=/etc/ssl/certs/dhparam.pem
+        mode=0644
+  notify: nginx restart
+  tags:
+    - smarty
+    - nginx
+
 - name: Compile Nginx configuration
   template: src=nginx.conf.j2
             dest=/etc/nginx/sites-available/{{ application_domain }}.conf
@@ -43,6 +53,13 @@
 
 - name: Remove default Nginx config
   file: path=/etc/nginx/sites-enabled/default state=absent
+  tags:
+    - smarty
+    - nginx
+
+
+- name: Create certbot verification dir
+  file: path=/var/www/{{ application_domain }} state=directory mode=0755
   tags:
     - smarty
     - nginx

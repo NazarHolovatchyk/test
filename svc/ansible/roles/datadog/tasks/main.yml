@@ -1,0 +1,19 @@
+---
+
+- name: Install Datadog dependencies
+  apt: name={{ item }} update_cache={{ update_apt_cache }} state=latest
+  with_items:
+    - sysstat
+  tags: datadog
+
+
+- name: Install Datadog from source
+  command: DD_START_AGENT=0 DD_API_KEY={{ datadog_api_key }} sh -c "$(curl -L https://raw.githubusercontent.com/DataDog/dd-agent/master/packaging/datadog-agent/source/setup_agent.sh)"
+  tags: datadog
+
+
+- name: Run datadog agent
+  command: "bin/agent > {{ datadog_agent_log }}/ 2>&1 &"
+  args:
+    chdir: "{{ datadog_base_dir }}"
+  tags: datadog

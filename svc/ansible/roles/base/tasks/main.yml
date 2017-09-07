@@ -1,7 +1,7 @@
 ---
 
 - name: Ensure bash, OpenSSl, and libssl are the latest versions
-  apt: name={{ item }} update_cache={{ update_apt_cache }} state=latest
+  apt: name={{ item }} update_cache={{ update_apt_cache }} state=latest autoremove=yes
   with_items:
     - bash
     - openssl
@@ -18,8 +18,4 @@
     - git
     - vim
     - i2c-tools
-  tags: packages
-
-- name: Auto-remove old apt packages
-  command: sudo apt-get autoremove -y
   tags: packages

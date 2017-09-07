@@ -1,6 +1,17 @@
 #!/usr/bin/env bash
 
+# Enable backports
+sudo apt-key adv --keyserver keyserver.ubuntu.com --recv-keys 7638D0442B90D010
+sudo apt-key adv --keyserver keyserver.ubuntu.com --recv-keys 8B48AD6246925553
+echo 'deb http://httpredir.debian.org/debian jessie-backports main contrib non-free' | sudo tee -a /etc/apt/sources.list.d/jessie-backports.list
+sudo apt-get update
+
+# Install certbot
+sudo apt-get install -y certbot -t jessie-backports
+
 sudo certbot certonly --webroot -w /var/www/smrty.net -d smrty.net -d www.smrty.net
+
+sudo certbot renew
 
 #sudo certbot certonly --webroot -w /var/www/smrty.net -d smrty.net -d www.smrty.net
 #Saving debug log to /var/log/letsencrypt/letsencrypt.log

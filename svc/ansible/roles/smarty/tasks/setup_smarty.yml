@@ -8,15 +8,15 @@
     - smarty
     - push_updates
 
-- name: Delete logs
-  file:
-    path: "{{ log_path }}/"
-    state: absent
-  tags: smarty
+#- name: Delete logs
+#  file:
+#    path: "{{ log_path }}/"
+#    state: absent
+#  tags: smarty
 
 - name: Create the application log folder
   file: path={{ log_path }}
-        mode=0774
+        mode=0777
         state=directory
         owner={{ app_user }}
         group={{ app_group }}

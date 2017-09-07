@@ -3,11 +3,11 @@
 - name: Deploy {{ application_name }} to Raspberry
   hosts: 82.207.110.53
   remote_user: pi
-  become: true
+  become: yes
   vars_files:
     - env_vars/base.yml
     - env_vars/secret.yml
   roles:
-    # - base
-    # - collector
+    - { role: base, when: setup_base }
     - smarty
+    - { role: datadog, when: setup_datadog }

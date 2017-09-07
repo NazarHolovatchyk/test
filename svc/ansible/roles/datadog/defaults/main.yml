@@ -1,0 +1,5 @@
+---
+
+datadog_base_dir: /home/pi/.datadog-agent
+datadog_agent_log: "{{ datadog_base_dir }}/agent.log"
+# datadog_api_key: "TBD"

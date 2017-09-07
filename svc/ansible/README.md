@@ -1,5 +1,11 @@
 # Ansible deployment
 
+## Deployment
+	
+	(env)$ make deploy
+	
+	or
+	
     (env)$ cd ansible
     (env)$ ansible-playbook pi.yml -i hosts -v --ask-pass --ask-vault-pass
         
@@ -13,4 +19,3 @@ https://www.digitalocean.com/community/tutorials/how-to-secure-nginx-with-let-s-
 cert renew in cron
 
 	15 3 * * * /usr/bin/certbot renew --quiet --renew-hook "/bin/systemctl reload nginx"
-	
