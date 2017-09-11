@@ -4,6 +4,7 @@
     minute: "15"
     hour: "8"
     job: "{{ virtualenv_path }}/bin/python {{ project_path }}/svc/cli.py -d door -c on"
+  tags: broadlink
 
 
 - cron:
@@ -11,3 +12,13 @@
     minute: "15"
     hour: "21"
     job: "{{ virtualenv_path }}/bin/python {{ project_path }}/svc/cli.py -d door -c off"
+  tags: broadlink
+
+
+- cron:
+    name: "weather briefing"
+    minute: "0"
+    job: "{{ virtualenv_path }}/bin/python {{ project_path }}/svc/briefing_cli.py -n weather -o {{ project_path }}/static/weather.json"
+  tags:
+    - briefing
+    - weather

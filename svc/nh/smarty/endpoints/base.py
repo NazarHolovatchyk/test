@@ -38,9 +38,11 @@ class BaseResource(Resource):
         return param
 
     @staticmethod
-    def success_response(result, status=200, headers=None,
-                         content_type='application/json'):
-        body = json.dumps(result)
+    def success_response(result, status=200, headers=None, content_type='application/json', raw=False):
+        if raw:
+            body = result
+        else:
+            body = json.dumps(result)
         response = Response(body, status=status, content_type=content_type)
         if headers:
             for key, val in headers.iteritems():

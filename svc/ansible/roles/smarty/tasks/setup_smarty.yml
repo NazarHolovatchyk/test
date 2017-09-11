@@ -22,6 +22,12 @@
         group={{ app_group }}
   tags: smarty
 
+- name: Create the static folder
+  file: path="{{ project_path }}/static"
+        mode=0644
+        state=directory
+  tags: smarty
+
 #- name: Create the application log file
 #  file: path={{ log_path }}
 #        owner={{ app_user }}
