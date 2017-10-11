@@ -6,6 +6,7 @@ base_path: "/home/pi"
 project_path: "{{ base_path }}/smarty"
 log_path: "{{ project_path }}/logs"
 virtualenv_path: "{{ project_path }}/venv"
+static_path: "{{ project_path }}/svc/static"
 rebuild_virtualenv: no
 requirements_file: "{{ project_path }}/svc/requirements.txt"
 

@@ -1,4 +1,4 @@
 Flask==0.12.2
 Flask-RESTful==0.3.6
--e git+https://github.com/mjg59/python-broadlink.git#egg=broadlink
+broadlink==0.5
 pyowm==2.7.1

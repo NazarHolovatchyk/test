@@ -30,11 +30,7 @@ class SceneEndpoint(BaseResource):
             except ValueError as err:
                 return self.error_response(str(err), status=400)
             except KeyError as err:
-                return self.error_response(
-                    'Error processing scene',
-                    details=str(err),
-                    status=501
-                )
+                return self.error_response('Error processing scene', details=str(err), status=501)
             except IOError as err:
                 return self.error_response(
                     'Error sending command to a device',

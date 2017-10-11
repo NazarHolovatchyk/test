@@ -13,7 +13,9 @@ class BaseBriefing(object):
             'uid': str(uuid4()),
             'updateDate': datetime.utcnow().strftime('%Y-%m-%dT%H:%M:%S.0Z'),
             'titleText': title,
-            'mainText': text
+            'mainText': text,
+            'streamUrl': '',
+            'redirectionURL': 'https://smrty.net/v1/briefing/weather'
         }
         if stream_url:
             item['streamUrl'] = stream_url

@@ -8,7 +8,7 @@ from nh.smarty.providers.base_briefing import BaseBriefing
 DEGREE_CHAR = u'\xB0'
 
 
-class OWMBriefing(BaseBriefing):
+class OWMBriefing(object):
     """
     {
       "status": "Clouds",
@@ -48,9 +48,9 @@ class OWMBriefing(BaseBriefing):
     def __init__(self, api_key):
         self.api_key = api_key
 
-    def get_data(self):
+    def get_data(self, location):
         owm = OWM(API_key=self.api_key)
-        forecaster = owm.daily_forecast('Lviv,ua')
+        forecaster = owm.daily_forecast(location)
         forecast_json = forecaster.get_forecast().to_JSON()
         forecast = json.loads(forecast_json)
 
@@ -72,8 +72,7 @@ class OWMBriefing(BaseBriefing):
                 wind=wind,
                 pressure=pressure
             )
-            item = self.create_briefing_item(title=title, text=text)
-            briefing.append(item)
+            briefing.append({'title': title, 'text': text})
 
         return briefing
 

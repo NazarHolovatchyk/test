@@ -17,6 +17,7 @@ class ActuatorEndpoint(BaseResource):
             return self.error_response(err, status=400)
 
         logger.info("Actuator: room={}, device={}, command={}".format(room, device_name, cmd))
+        room = room.replace('the ', '')
         if room not in DEVICE_MAPPING:
             return self.error_response('There is no room: {}'.format(room), status=400)
 

@@ -120,6 +120,30 @@ def scene_intent(intent, session):
     return build_response(speech_output, title='Scene')
 
 
+def weather_intent(intent, session):
+    print("weather_intent: {}, session: {}".format(intent, session))
+
+    context = get_context()
+    url = context.get('AutomationServiceUrl')
+    uri = url + '/v1/weather'
+
+    slots = intent.get('slots', {})
+    day = slots.get('day', {}).get('value', '')
+    data = {'day': day}
+    print('Request GET: {} data={}'.format(uri, data))
+
+    status_code, response_data = get(uri, data=data)
+    print('Scene response: {} - {}'.format(status_code, response_data))
+
+    if status_code == 200:
+        speech_output = 'On {} is {}'.format(response_data[0]['title'], response_data[0]['text'])
+    elif status_code in [400, 501]:
+        speech_output = response_data.get('error', 'error')
+    else:
+        speech_output = 'error'
+    return build_response(speech_output, title='Scene')
+
+
 def version_intent(intent, session):
     print("version_intent: {}, session: {}".format(intent, session))
     context = get_context()
@@ -173,6 +197,8 @@ def on_intent(intent_request, session):
         return scene_intent(intent, session)
     if intent_name == "SensorIntent":
         return sensor_intent(intent, session)
+    if intent_name == "WeatherIntent":
+        return weather_intent(intent, session)
     if intent_name == "VersionIntent":
         return version_intent(intent, session)
     elif intent_name == "AMAZON.HelpIntent":

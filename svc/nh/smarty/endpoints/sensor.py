@@ -16,6 +16,7 @@ class SensorEndpoint(BaseResource):
             return self.error_response(err, status=400)
 
         logger.info("Sensor: room={}, sensor={}".format(room, sensor))
+        room = room.replace('the ', '')
         if room not in SENSOR_MAPPING:
             return self.error_response('There is no room {}'.format(room), status=400)
         if sensor not in SENSOR_MAPPING[room]:
