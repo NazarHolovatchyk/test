@@ -6,11 +6,11 @@ SCENES = {
         {'device': 'light', 'cmd': 'off'}
     ],
     'movie': [
-        {'device': 'tv', 'cmd': 'power'},
+        {'device': 'tv', 'cmd': 'on'},
         {'device': 'delay', 'cmd': 0.5},
         {'device': 'apple', 'cmd': 'menu'},
         {'device': 'delay', 'cmd': 0.5},
-        {'device': 'audio', 'cmd': 'power'},
+        {'device': 'audio', 'cmd': 'on'},
         {'device': 'delay', 'cmd': 0.5},
         {'device': 'light', 'cmd': 'on'},
         {'device': 'delay', 'cmd': 0.5},
@@ -34,10 +34,10 @@ SCENES = {
         {'device': 'delay', 'cmd': 0.5},
         {'device': 'apple', 'cmd': 'menu'}
     ],
-    'happy end': [
-        {'device': 'tv', 'cmd': 'power'},
+    'finish': [
+        {'device': 'tv', 'cmd': 'off'},
         {'device': 'delay', 'cmd': 0.5},
-        {'device': 'audio', 'cmd': 'power'},
+        {'device': 'audio', 'cmd': 'off'},
         {'device': 'delay', 'cmd': 0.5},
         {'device': 'apple', 'cmd': 'menu'},
         {'device': 'delay', 'cmd': 0.5},

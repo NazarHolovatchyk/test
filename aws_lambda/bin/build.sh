@@ -50,7 +50,7 @@ do
     pushd ${JOB_PATH}
     docker run --rm -v ${JOB_PATH}:/var/task -v /tmp/.pip-cache:/tmp/.pip-cache \
         lambci/lambda:build-python2.7 \
-        pip install -r requirements.txt -t ${JOB_PATH} --cache-dir=/tmp/.pip-cache/
+        pip install -r requirements.txt -t /var/task --cache-dir=/tmp/.pip-cache/
 
     cp ${LAMBDA_BASE_DIR}/context/${STAGE}.json ${JOB_PATH}/.context
     cp -R ${LAMBDA_BASE_DIR}/common ${JOB_PATH}
