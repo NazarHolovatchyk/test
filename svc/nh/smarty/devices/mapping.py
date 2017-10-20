@@ -32,6 +32,9 @@ DEVICE_MAPPING = {
     'cabinet': {}
 }
 
+DEVICE_MAPPING['house']['television'] = DEVICE_MAPPING['house']['tv']
+DEVICE_MAPPING['livingroom']['television'] = DEVICE_MAPPING['livingroom']['tv']
+
 SENSOR_MAPPING = {
     'house': {
         'temperature': BMP180(),
