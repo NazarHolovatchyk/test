@@ -57,5 +57,3 @@ SCENES = {
         {'device': 'router', 'cmd': 'on'}
     ]
 }
-
-SCENES['happy'] = SCENES['happy end']
