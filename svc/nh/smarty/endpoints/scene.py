@@ -23,9 +23,9 @@ class SceneEndpoint(BaseResource):
         for action in scene:
             room = action.get('room', 'house')
             device_name = action['device']
+            logging.info('Action in {}: {} - {}'.format(room, device_name, action.get('cmd')))
             try:
                 device = DEVICE_MAPPING[room][device_name]
-                logging.info('Action: {} - {}'.format(device_name, action['cmd']))
                 device.send(action['cmd'])
             except ValueError as err:
                 return self.error_response(str(err), status=400)

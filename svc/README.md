@@ -5,6 +5,14 @@
     cd svc
     virtualenv venv
     pip install -r requirements.txt
+
+## Run API service locally
+
+	make run
+
+## Deploy code to Rapberry
+
+	make deploy
     
 ### Raspberry Pi
     

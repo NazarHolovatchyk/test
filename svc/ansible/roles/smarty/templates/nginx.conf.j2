@@ -42,8 +42,9 @@ server {
     #    alias /home/docker/persistent/media;  # your Flask project's media files - amend as required
     #}
 
-    location /static {
-        alias /var/www/static;
+    location /static/ {
+        alias /var/www/static/;
+        autoindex off;
     }
 
     # Finally, send all non-media requests to the Flask server.

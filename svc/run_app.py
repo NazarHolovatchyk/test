@@ -1,6 +1,6 @@
 import logging
 
-from flask_restful import Api
+from flask_restful import Api, Resource
 
 from nh.smarty.app import setup_app
 from nh.smarty.endpoints.actuator import ActuatorEndpoint
@@ -13,6 +13,20 @@ from nh.smarty.endpoints.sensor import SensorEndpoint
 logging.basicConfig(level=logging.INFO)
 
 
+class Repos(Resource):
+    def get(self):
+        return ['test']
+
+
+class Tags(Resource):
+    def post(self):
+        return {
+            'tags': [
+                {'test': '0.1'}
+            ]
+        }
+
+
 def register_resources(_api):
     _api.add_resource(Status, '/v1/status')
     _api.add_resource(SceneEndpoint, '/v1/scene')
@@ -20,6 +34,9 @@ def register_resources(_api):
     _api.add_resource(ActuatorEndpoint, '/v1/actuator')
     _api.add_resource(SensorEndpoint, '/v1/sensor')
     _api.add_resource(SystemEndpoint, '/v1/system/<string:device>')
+    _api.add_resource(Repos, '/v1/repos')
+    _api.add_resource(Tags, '/v1/tags')
+
 
 app = setup_app()
 api = Api(app)

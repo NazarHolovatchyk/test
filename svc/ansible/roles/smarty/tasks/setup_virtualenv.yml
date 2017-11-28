@@ -12,6 +12,8 @@
   with_items:
     - virtualenv
     - boto3
+    - wheel
+  tags: smarty
 
 - name: Create the virtualenv
   command: virtualenv --system-site-packages {{ virtualenv_path }}
