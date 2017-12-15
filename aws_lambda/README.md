@@ -8,7 +8,7 @@ AWS lambdas as backend of Alexa skills
     
 ## Alexa lambdas
 
-    make lambda
+    make build
     ls dist
     make deploy
     aws s3 ls s3://alexa-automation/lambdas

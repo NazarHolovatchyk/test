@@ -4,7 +4,7 @@ STAGE ?= prod
 
 .PHONY: lambda deploy
 
-lambda:
+build:
 	echo "Make Lambda packages for ${STAGE}"
 	sh bin/build.sh ${STAGE}
 
