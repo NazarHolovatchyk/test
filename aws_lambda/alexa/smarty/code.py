@@ -8,9 +8,10 @@ http://amzn.to/1LGWsLG
 """
 from __future__ import print_function
 
+import requests
+
 from common.alexa import build_response
 from common.context import get_context
-from common.http import get, put
 from common.intelite import INTELITE_MAP
 
 
@@ -35,7 +36,7 @@ def actuator_intent(intent, session):
     uri = url + '/v1/actuator'
 
     slots = intent.get('slots', {})
-    room = slots['room'].get('value', 'house')
+    room = slots['room'].get('value', 'house').replace('the ', '')
     if intent['name'] == "DimmLightIntent":
         device = 'light'
         state = slots['intelite_state'].get('value')
@@ -55,12 +56,13 @@ def actuator_intent(intent, session):
     }
     print('Request PUT: {} data={}'.format(uri, data))
 
-    status_code, response_data = put(uri, data=data)
-    print('Actuator response: {} - {}'.format(status_code, response_data))
+    response = requests.put(uri, json=data)
+    print('Actuator response: {} - {}'.format(response.status_code, response.content))
 
-    if status_code == 200:
+    if response.status_code == 200:
         speech_output = 'done'
-    elif status_code in [400, 501]:
+    elif response.status_code in [400, 501]:
+        response_data = response.json()
         speech_output = response_data.get('error', 'error')
     else:
         speech_output = 'error'
@@ -74,7 +76,7 @@ def sensor_intent(intent, session):
     uri = url + '/v1/sensor'
 
     slots = intent.get('slots', {})
-    room = slots.get('room', {}).get('value', 'house')
+    room = slots.get('room', {}).get('value', 'house').replace('the ', '')
     sensor = slots['sensor'].get('value')
     params = {
         'room': room,
@@ -82,12 +84,14 @@ def sensor_intent(intent, session):
     }
     print('Request GET: {} params={}'.format(uri, params))
 
-    status_code, response_data = get(uri, params=params)
-    print('Service response: {} - {}'.format(status_code, response_data))
+    response = requests.get(uri, params=params)
+    print('Service response: {} - {}'.format(response.status_code, response.content))
 
-    if status_code == 200:
+    if response.status_code == 200:
+        response_data = response.json()
         speech_output = response_data['result']
-    elif status_code in [400, 501]:
+    elif response.status_code in [400, 501]:
+        response_data = response.json()
         speech_output = response_data.get('error', 'error')
     else:
         speech_output = 'error'
@@ -108,13 +112,13 @@ def scene_intent(intent, session):
     }
     print('Request PUT: {} data={}'.format(uri, data))
 
-    status_code, response_data = put(uri, data=data)
-    print('Scene response: {} - {}'.format(status_code, response_data))
+    response = requests.put(uri, json=data)
+    print('Service response: {} - {}'.format(response.status_code, response.content))
 
-    if status_code == 200:
+    if response.status_code == 200:
         speech_output = '{} scene activated'.format(scene)
-    elif status_code in [400, 501]:
-        speech_output = response_data.get('error', 'error')
+    elif response.status_code in [400, 501]:
+        speech_output = response.json().get('error', 'error')
     else:
         speech_output = 'error'
     return build_response(speech_output, title='Scene')
@@ -129,15 +133,17 @@ def weather_intent(intent, session):
 
     slots = intent.get('slots', {})
     day = slots.get('day', {}).get('value', '')
-    data = {'day': day}
-    print('Request GET: {} data={}'.format(uri, data))
+    params = {'day': day}
+    print('Request GET: {} data={}'.format(uri, params))
 
-    status_code, response_data = get(uri, data=data)
-    print('Scene response: {} - {}'.format(status_code, response_data))
+    response = requests.get(uri, params=params)
+    print('Service response: {} - {}'.format(response.status_code, response.content))
 
-    if status_code == 200:
+    if response.status_code == 200:
+        response_data = response.json()
         speech_output = 'On {} is {}'.format(response_data[0]['title'], response_data[0]['text'])
-    elif status_code in [400, 501]:
+    elif response.status_code in [400, 501]:
+        response_data = response.json()
         speech_output = response_data.get('error', 'error')
     else:
         speech_output = 'error'
@@ -151,16 +157,13 @@ def version_intent(intent, session):
     uri = url + '/v1/status'
     print('Request GET: {}'.format(uri))
 
-    status_code, response_data = get(uri)
-    print('Automation service response: {} - {}'.format(status_code, response_data))
+    response = requests.get(uri)
+    print('Service response: {} - {}'.format(response.status_code, response.content))
 
-    # response = requests.get(uri)
-    # print('Automation service response: {} - {}'.format(response.status_code, response.content))
-    # if response.status_code != 200:
-    if status_code != 200:
+    if response.status_code != 200:
         speech_output = 'Error calling Automation service'
     else:
-        version = response_data['version']
+        version = response.json()['version']
         speech_output = 'Automation service version is {}'.format(version)
     return build_response(speech_output, title=intent['name'])
 

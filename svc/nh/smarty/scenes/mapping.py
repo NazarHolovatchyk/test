@@ -45,6 +45,33 @@ SCENES = {
         {'device': 'delay', 'cmd': 0.5},
         {'device': 'apple', 'cmd': 'menu'}
     ],
+    'video': [
+        {'device': 'tv', 'cmd': 'on'},
+        {'device': 'delay', 'cmd': 10},
+        {'device': 'tv', 'cmd': 'source'},
+        {'device': 'delay', 'cmd': 1},
+        {'device': 'tv', 'cmd': 'up'},
+        {'device': 'delay', 'cmd': 0.5},
+        {'device': 'tv', 'cmd': 'right'},
+        {'device': 'delay', 'cmd': 0.5},
+        {'device': 'tv', 'cmd': 'right'},
+        {'device': 'delay', 'cmd': 0.5},
+        {'device': 'tv', 'cmd': 'ok'}
+    ],
+    'tv_next_source': [
+        {'device': 'tv', 'cmd': 'source'},
+        {'device': 'delay', 'cmd': 1},
+        {'device': 'tv', 'cmd': 'right'},
+        {'device': 'delay', 'cmd': 0.5},
+        {'device': 'tv', 'cmd': 'ok'}
+    ],
+    'tv_previous_source': [
+        {'device': 'tv', 'cmd': 'source'},
+        {'device': 'delay', 'cmd': 1},
+        {'device': 'tv', 'cmd': 'right'},
+        {'device': 'delay', 'cmd': 0.5},
+        {'device': 'tv', 'cmd': 'ok'}
+    ],
     'evening': [
         {'room': 'bedroom', 'device': 'light', 'cmd': 'w5'}
     ],
@@ -57,3 +84,5 @@ SCENES = {
         {'device': 'router', 'cmd': 'on'}
     ]
 }
+
+SCENES['cameras'] = SCENES['video']
