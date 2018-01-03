@@ -2,7 +2,7 @@ SCRIPT_DIR=$(realpath $(shell dirname $(lastword $(MAKEFILE_LIST))))
 LAMBDA_S3_PATH ?= s3://alexa-automation/lambdas
 STAGE ?= prod
 
-.PHONY: lambda deploy
+.PHONY: build deploy
 
 build:
 	echo "Make Lambda packages for ${STAGE}"
